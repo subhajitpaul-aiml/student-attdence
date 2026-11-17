@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - EduTrack Attendance Management System</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+      padding: 1.5rem;
+    }
+
+    .auth-card {
+      background-color: var(--white);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      width: 100%;
+      max-width: 460px;
+      padding: 2.25rem;
+      position: relative;
+    }
+
+    .auth-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .demo-accounts-box {
+      margin-top: 1.75rem;
+      padding-top: 1.5rem;
+      border-top: 1px dashed var(--slate-200);
+    }
+
+    .demo-btn-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.65rem;
+      margin-top: 0.75rem;
+    }
+
+    .demo-role-btn {
+      padding: 0.6rem 0.5rem;
+      border: 1px solid var(--slate-200);
+      background-color: var(--slate-50);
+      border-radius: var(--radius-md);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--slate-700);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all var(--transition-fast);
+    }
+
+    .demo-role-btn:hover {
+      background-color: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .demo-role-btn i {
+      width: 18px;
+      height: 18px;
+    }
+  </style>
+</head>
+<body class="auth-page">
+
+  <div class="auth-card">
+    <!-- Brand Header -->
+    <div class="auth-brand">
+      <div class="brand-icon-box">
+        <i data-lucide="graduation-cap"></i>
+      </div>
+      <div class="brand-name">Edu<span>Track</span></div>
+    </div>
+
+    <div class="text-center mb-4" style="margin-bottom: 1.5rem;">
+      <h2 style="font-size: 1.35rem; font-weight: 800;">Welcome Back</h2>
+      <p class="text-sm text-muted">Sign in to your EduTrack institutional account</p>
+    </div>
+
+    <!-- Login Form -->
+    <form id="loginForm">
+      <div class="form-group">
+        <label class="form-label" for="loginEmail">Email or Username <span class="required">*</span></label>
+        <div class="search-wrapper">
+          <i data-lucide="mail"></i>
+          <input type="text" id="loginEmail" class="form-control" placeholder="name@edutrack.edu or username" required autofocus value="admin@edutrack.edu">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+          <label class="form-label" for="loginPassword" style="margin-bottom: 0;">Password <span class="required">*</span></label>
+          <a href="javascript:void(0)" id="forgotPasswordLink" class="text-xs text-primary font-semibold">Forgot Password?</a>
+        </div>
+        <div class="search-wrapper">
+          <i data-lucide="lock"></i>
+          <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required value="admin123">
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+        <label class="form-check text-xs text-secondary font-medium">
+          <input type="checkbox" id="rememberMe" checked>
+          <span>Remember this device</span>
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 0.95rem;">
+        <i data-lucide="log-in"></i> Sign In to Portal
+      </button>
+    </form>
+
+    <!-- 1-Click Demo Accounts -->
+    <div class="demo-accounts-box">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Demo 1-Click Login</span>
+        <span class="demo-badge">Instant Demo</span>
+      </div>
+
+      <div class="demo-btn-grid">
+        <button type="button" class="demo-role-btn" onclick="quickLoginRole('admin')">
+          <i data-lucide="shield-check" style="color: #dc2626;"></i>
+          <span>Admin</span>
+        </button>
+        <button type="button" class="demo-role-btn" onclick="quickLoginRole('teacher')">
+          <i data-lucide="briefcase" style="color: #4f46e5;"></i>
+          <span>Teacher</span>
+        </button>
+        <button type="button" class="demo-role-btn" onclick="quickLoginRole('student')">
+          <i data-lucide="user" style="color: #10b981;"></i>
+          <span>Student</span>
+        </button>
+      </div>
+      <p class="text-xs text-center text-muted" style="margin-top: 0.75rem;">
+        Role switch simulation without backend password verification.
+      </p>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div class="modal-overlay" id="forgotPasswordModal">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title">Reset Password</h3>
+        <button class="modal-close-btn" data-close-modal="forgotPasswordModal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-sm text-secondary mb-3">Enter your registered institution email to receive a password recovery link.</p>
+        <div class="form-group">
+          <label class="form-label">Institution Email</label>
+          <input type="email" id="recoveryEmail" class="form-control" placeholder="name@edutrack.edu">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" data-close-modal="forgotPasswordModal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="sendRecoveryBtn">Send Instructions</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Form submit
+      const form = document.getElementById('loginForm');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPassword').value;
+        const remember = document.getElementById('rememberMe').checked;
+
+        const res = Auth.login(email, pass, remember);
+        if (res.success) {
+          App.showToast('Login Successful', `Welcome back, ${res.user.name}!`, 'success');
+          setTimeout(() => {
+            Auth.redirectToDashboard(res.user.role);
+          }, 600);
+        } else {
+          App.showToast('Authentication Error', res.message, 'error');
+        }
+      });
+
+      // Forgot Password Modal
+      document.getElementById('forgotPasswordLink').addEventListener('click', () => {
+        App.openModal('forgotPasswordModal');
+      });
+
+      document.getElementById('sendRecoveryBtn').addEventListener('click', () => {
+        const email = document.getElementById('recoveryEmail').value;
+        if (!email) {
+          App.showToast('Email Required', 'Please enter your email address.', 'warning');
+          return;
+        }
+        App.closeModal('forgotPasswordModal');
+        App.showToast('Demo Reset Sent', `Password recovery link sent to ${email} (simulated).`, 'info');
+      });
+    });
+
+    function quickLoginRole(role) {
+      const user = Auth.quickLogin(role);
+      if (user) {
+        App.showToast('Demo Login', `Signed in as ${user.name} (${role.toUpperCase()})`, 'success');
+      }
+    }
+  </script>
+</body>
+</html>
