@@ -1,0 +1,186 @@
+/* ==========================================================================
+   EduTrack - Responsive Media Queries & Mobile Optimizations
+   ========================================================================== */
+
+/* Laptop & Desktop adjustments */
+@media (max-width: 1200px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-2col {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tablet Screens (max-width: 992px) */
+@media (max-width: 992px) {
+  :root {
+    --sidebar-width: 240px;
+  }
+
+  .app-sidebar {
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .app-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-toggle-btn {
+    display: inline-flex;
+  }
+
+  .app-main {
+    margin-left: 0;
+  }
+
+  .app-header {
+    padding: 0 1.25rem;
+  }
+
+  .app-content {
+    padding: 1.25rem;
+  }
+
+  .header-search {
+    max-width: 220px;
+  }
+
+  .user-profile-meta {
+    display: none;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile Screens (max-width: 768px) */
+@media (max-width: 768px) {
+  .page-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+
+  .header-search {
+    display: none; /* Can be opened via icon or placed in page */
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .attendance-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem;
+  }
+
+  .attendance-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-item {
+    width: 100%;
+  }
+
+  .attendance-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .attendance-actions .btn {
+    flex: 1;
+  }
+
+  .attendance-summary-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .summary-pill {
+    justify-content: space-between;
+  }
+
+  .modal-card {
+    max-width: 95vw;
+    margin: 0.5rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .modal-header, .modal-body, .modal-footer {
+    padding: 1rem;
+  }
+
+  .preview-tabs {
+    gap: 0.75rem;
+  }
+
+  .preview-tab-btn {
+    font-size: 0.825rem;
+  }
+
+  .whatsapp-bubble, .sms-bubble {
+    max-width: 95%;
+  }
+
+  .calendar-day-cell {
+    height: 40px;
+    font-size: 0.75rem;
+  }
+
+  .table-actions {
+    flex-wrap: wrap;
+  }
+
+  .status-btn-group {
+    width: 100%;
+    display: flex;
+  }
+
+  .status-btn {
+    flex: 1;
+  }
+
+  .notif-dropdown {
+    width: 300px;
+    right: -50px;
+  }
+}
+
+/* Small Smart Phones (max-width: 480px) */
+@media (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+
+  .app-header {
+    padding: 0 0.85rem;
+  }
+
+  .app-content {
+    padding: 1rem 0.75rem;
+  }
+
+  .brand-name {
+    font-size: 1.1rem;
+  }
+
+  .notif-dropdown {
+    width: 280px;
+    right: -80px;
+  }
+
+  .toast-container {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    width: auto;
+  }
+}

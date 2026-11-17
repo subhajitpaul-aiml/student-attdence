@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <defs>
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e40af" />
+      <stop offset="100%" stop-color="#4f46e5" />
+    </linearGradient>
+  </defs>
+  <rect x="5" y="8" width="44" height="44" rx="10" fill="url(#brandGrad)" />
+  <path d="M27 18 L15 25 L27 32 L39 25 Z" fill="#ffffff" />
+  <path d="M19 28 L19 36 Q27 41 35 36 L35 28" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" />
+  <circle cx="39" cy="30" r="1.5" fill="#ffffff" />
+  <line x1="39" y1="30" x2="39" y2="38" stroke="#ffffff" stroke-width="2" stroke-linecap="round" />
+  <text x="58" y="38" font-family="'Plus Jakarta Sans', 'Inter', sans-serif" font-size="24" font-weight="800" fill="#0f172a">Edu<tspan fill="#4f46e5">Track</tspan></text>
+</svg>

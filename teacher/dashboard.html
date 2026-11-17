@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard - EduTrack</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="app-layout">
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="app-sidebar" id="appSidebar">
+    <div class="sidebar-header">
+      <a href="dashboard.html" class="brand-logo">
+        <div class="brand-icon-box"><i data-lucide="graduation-cap"></i></div>
+        <span class="brand-name">Edu<span>Track</span></span>
+      </a>
+    </div>
+
+    <div class="sidebar-content">
+      <div class="nav-section">
+        <span class="nav-section-title">Teacher Portal</span>
+        <a href="dashboard.html" class="nav-link active">
+          <i data-lucide="layout-dashboard"></i>
+          <span>My Dashboard</span>
+        </a>
+        <a href="attendance.html" class="nav-link">
+          <i data-lucide="calendar-check-2"></i>
+          <span>Take Class Attendance</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <span class="nav-section-title">Institutional Portals</span>
+        <a href="../admin/dashboard.html" class="nav-link" onclick="Auth.quickLogin('admin')">
+          <i data-lucide="shield"></i>
+          <span>Switch to Admin Portal</span>
+        </a>
+        <a href="../student/dashboard.html" class="nav-link" onclick="Auth.quickLogin('student')">
+          <i data-lucide="user"></i>
+          <span>Switch to Student View</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <a href="../login.html" class="nav-link text-danger" onclick="Auth.logout()">
+          <i data-lucide="log-out"></i>
+          <span>Sign Out</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-snippet">
+        <img class="user-snippet-avatar js-user-avatar" src="" alt="Teacher">
+        <div class="user-snippet-info">
+          <div class="user-snippet-name js-user-name">Sarah Jenkins</div>
+          <div class="user-snippet-role js-user-role">Teacher &bull; Mathematics</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Container -->
+  <div class="app-main">
+    <header class="app-header">
+      <div class="header-left">
+        <button class="sidebar-toggle-btn" id="sidebarToggleBtn"><i data-lucide="menu"></i></button>
+        <div class="header-title-wrapper">
+          <h1 class="header-page-title">Faculty Portal</h1>
+          <span class="header-breadcrumbs">Teacher / Classroom / Overview</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="dropdown-wrapper">
+          <button class="user-profile-btn" id="userMenuBtn">
+            <img class="user-profile-avatar js-user-avatar" src="" alt="Profile">
+            <div class="user-profile-meta">
+              <span class="user-meta-name js-user-name">Sarah Jenkins</span>
+              <span class="user-meta-role">Faculty</span>
+            </div>
+            <i data-lucide="chevron-down" style="width:16px;height:16px;color:var(--slate-400);"></i>
+          </button>
+          <div class="dropdown-menu" id="userDropdown">
+            <div class="dropdown-header">
+              <span class="font-bold text-sm js-user-name">Sarah Jenkins</span>
+              <span class="text-xs text-muted d-block js-user-email">sarah.jenkins@edutrack.edu</span>
+            </div>
+            <button class="dropdown-item text-danger" onclick="Auth.logout()"><i data-lucide="log-out"></i> Logout</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="page-header-row">
+        <div>
+          <h2 class="page-title">Hello, <span class="js-user-name">Teacher</span> 👋</h2>
+          <p class="page-subtitle">Here is your daily classroom schedule and attendance overview.</p>
+        </div>
+        <div>
+          <a href="attendance.html" class="btn btn-primary btn-lg">
+            <i data-lucide="check-square"></i> Take Attendance Now
+          </a>
+        </div>
+      </div>
+
+      <!-- Teacher Quick Statistics -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Assigned Classes</span>
+            <div class="stat-icon accent"><i data-lucide="school"></i></div>
+          </div>
+          <div class="stat-value" id="tchAssignedClasses">Grade 10-A, 9-B</div>
+          <div class="stat-footer"><span class="stat-caption">2 Sections assigned</span></div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Total Assigned Students</span>
+            <div class="stat-icon primary"><i data-lucide="users"></i></div>
+          </div>
+          <div class="stat-value" id="tchTotalStudents">18</div>
+          <div class="stat-footer"><span class="stat-caption">Across your classes</span></div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Present Today</span>
+            <div class="stat-icon success"><i data-lucide="user-check"></i></div>
+          </div>
+          <div class="stat-value text-success" id="tchPresentToday">16</div>
+          <div class="stat-footer"><span class="stat-trend up"><i data-lucide="check"></i> 88.9%</span></div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Absent Today</span>
+            <div class="stat-icon danger"><i data-lucide="user-x"></i></div>
+          </div>
+          <div class="stat-value text-danger" id="tchAbsentToday">2</div>
+          <div class="stat-footer"><span class="stat-caption">Simulated alerts generated</span></div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Attendance Rate</span>
+            <div class="stat-icon warning"><i data-lucide="percent"></i></div>
+          </div>
+          <div class="stat-value text-primary" id="tchAttendanceRate">91.4%</div>
+          <div class="stat-footer"><span class="stat-trend up"><i data-lucide="trending-up"></i> +1.2% this week</span></div>
+        </div>
+      </div>
+
+      <!-- Main Two Column Grid: Today's Timetable & Recent Activity -->
+      <div class="grid-2col">
+        <!-- Today's Timetable Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i data-lucide="clock"></i>
+              <span>Today's Class Schedule & Timetable</span>
+            </div>
+            <span class="badge badge-present">Active Term</span>
+          </div>
+          <div class="card-body">
+            <div class="timetable-list">
+              <div class="timetable-item current-period">
+                <div class="timetable-time-box">08:30 - 09:30</div>
+                <div class="timetable-info">
+                  <div class="timetable-subject">Mathematics (Calculus & Functions)</div>
+                  <div class="timetable-meta">Grade 10 - Section A &bull; Room 301 &bull; <strong>Current Period</strong></div>
+                </div>
+                <a href="attendance.html?class=Grade 10&section=A" class="btn btn-sm btn-primary">Take Attendance</a>
+              </div>
+
+              <div class="timetable-item">
+                <div class="timetable-time-box">09:45 - 10:45</div>
+                <div class="timetable-info">
+                  <div class="timetable-subject">Algebra & Geometry Fundamentals</div>
+                  <div class="timetable-meta">Grade 9 - Section B &bull; Room 202</div>
+                </div>
+                <a href="attendance.html?class=Grade 9&section=B" class="btn btn-sm btn-outline">Prepare</a>
+              </div>
+
+              <div class="timetable-item">
+                <div class="timetable-time-box">11:00 - 12:00</div>
+                <div class="timetable-info">
+                  <div class="timetable-subject">Faculty Planning & Office Hours</div>
+                  <div class="timetable-meta">Staff Room / Counseling</div>
+                </div>
+                <span class="badge" style="background:#f1f5f9; color:#475569;">Free Hour</span>
+              </div>
+
+              <div class="timetable-item">
+                <div class="timetable-time-box">13:00 - 14:00</div>
+                <div class="timetable-info">
+                  <div class="timetable-subject">Advanced Mathematics Workshop</div>
+                  <div class="timetable-meta">Grade 10 - Section A &bull; Math Lab</div>
+                </div>
+                <span class="badge badge-pending">Upcoming</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Classroom Attendance Activity -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i data-lucide="history"></i>
+              <span>Recent Attendance Activity</span>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Class</th>
+                    <th>Present</th>
+                    <th>Absent</th>
+                    <th>Alert Status</th>
+                  </tr>
+                </thead>
+                <tbody id="tchRecentActivityBody">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script>
+    Auth.requireRole(['teacher', 'admin']);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderTeacherDashboard();
+    });
+
+    function renderTeacherDashboard() {
+      const user = Auth.getUser() || { name: 'Sarah Jenkins', teacherId: 'TCH-101', assignedClasses: ['Grade 10-A', 'Grade 9-B'] };
+      const allStudents = Storage.getStudents();
+      const attendance = Storage.getAttendance();
+
+      // Find students in teacher's assigned classes
+      const assigned = user.assignedClasses || ['Grade 10-A', 'Grade 9-B'];
+      const myStudents = allStudents.filter(s => assigned.some(cls => `${s.class}-${s.section}` === cls));
+
+      document.getElementById('tchAssignedClasses').textContent = assigned.join(', ');
+      document.getElementById('tchTotalStudents').textContent = myStudents.length || 18;
+
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const todayRecs = attendance.filter(a => a.date === todayStr);
+
+      const present = todayRecs.filter(a => a.status === 'present').length;
+      const absent = todayRecs.filter(a => a.status === 'absent').length;
+
+      document.getElementById('tchPresentToday').textContent = present || 16;
+      document.getElementById('tchAbsentToday').textContent = absent || 2;
+
+      // Populate recent activity table
+      const tbody = document.getElementById('tchRecentActivityBody');
+      const uniqueDates = [...new Set(attendance.map(a => a.date))].slice(0, 5);
+
+      tbody.innerHTML = uniqueDates.map(d => {
+        const dayRecs = attendance.filter(a => a.date === d);
+        const dayPres = dayRecs.filter(a => a.status === 'present').length;
+        const dayAbs = dayRecs.filter(a => a.status === 'absent').length;
+
+        return `
+          <tr>
+            <td><span class="font-semibold text-slate-800">${d}</span></td>
+            <td><span class="badge" style="background:#f1f5f9; color:#334155;">Grade 10 - A</span></td>
+            <td><span class="text-success font-bold">${dayPres}</span></td>
+            <td><span class="text-danger font-bold">${dayAbs}</span></td>
+            <td>
+              <span class="badge badge-delivered">
+                <i data-lucide="check" style="width:12px;height:12px;"></i> Auto-Sent
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      App.initIcons();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class Attendance Register - Teacher Portal</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/attendance.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="app-layout">
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="app-sidebar" id="appSidebar">
+    <div class="sidebar-header">
+      <a href="dashboard.html" class="brand-logo">
+        <div class="brand-icon-box"><i data-lucide="graduation-cap"></i></div>
+        <span class="brand-name">Edu<span>Track</span></span>
+      </a>
+    </div>
+
+    <div class="sidebar-content">
+      <div class="nav-section">
+        <span class="nav-section-title">Teacher Portal</span>
+        <a href="dashboard.html" class="nav-link">
+          <i data-lucide="layout-dashboard"></i>
+          <span>My Dashboard</span>
+        </a>
+        <a href="attendance.html" class="nav-link active">
+          <i data-lucide="calendar-check-2"></i>
+          <span>Take Class Attendance</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <span class="nav-section-title">Institutional Portals</span>
+        <a href="../admin/dashboard.html" class="nav-link" onclick="Auth.quickLogin('admin')">
+          <i data-lucide="shield"></i>
+          <span>Admin Portal</span>
+        </a>
+        <a href="../student/dashboard.html" class="nav-link" onclick="Auth.quickLogin('student')">
+          <i data-lucide="user"></i>
+          <span>Student View</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <a href="../login.html" class="nav-link text-danger" onclick="Auth.logout()">
+          <i data-lucide="log-out"></i>
+          <span>Sign Out</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-snippet">
+        <img class="user-snippet-avatar js-user-avatar" src="" alt="Teacher">
+        <div class="user-snippet-info">
+          <div class="user-snippet-name js-user-name">Sarah Jenkins</div>
+          <div class="user-snippet-role js-user-role">Faculty &bull; Mathematics</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Container -->
+  <div class="app-main">
+    <header class="app-header">
+      <div class="header-left">
+        <button class="sidebar-toggle-btn" id="sidebarToggleBtn"><i data-lucide="menu"></i></button>
+        <div class="header-title-wrapper">
+          <h1 class="header-page-title">Daily Class Attendance</h1>
+          <span class="header-breadcrumbs">Teacher / Classroom / Attendance</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="dropdown-wrapper">
+          <button class="user-profile-btn" id="userMenuBtn">
+            <img class="user-profile-avatar js-user-avatar" src="" alt="Profile">
+            <div class="user-profile-meta">
+              <span class="user-meta-name js-user-name">Sarah Jenkins</span>
+              <span class="user-meta-role">Faculty</span>
+            </div>
+            <i data-lucide="chevron-down" style="width:16px;height:16px;color:var(--slate-400);"></i>
+          </button>
+          <div class="dropdown-menu" id="userDropdown">
+            <button class="dropdown-item text-danger" onclick="Auth.logout()"><i data-lucide="log-out"></i> Logout</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="page-header-row">
+        <div>
+          <h2 class="page-title">Record Class Attendance</h2>
+          <p class="page-subtitle">Mark daily student attendance and automatically generate parent simulated absent alerts.</p>
+        </div>
+      </div>
+
+      <!-- Instant Absent Alert Banner -->
+      <div class="instant-absent-alert" id="instantAbsentAlert">
+        <div class="instant-alert-content">
+          <i data-lucide="alert-triangle"></i>
+          <div>
+            <strong>Student Absent Notice Prepared:</strong>
+            <span id="instantAbsentStudentName">Student Name</span> has been marked absent. Notification preview ready for parent (<span id="instantAbsentParentPhone">Phone</span>).
+          </div>
+        </div>
+        <div>
+          <button type="button" class="btn btn-sm btn-outline" id="instantPreviewBtn" style="background:#fff;">
+            <i data-lucide="eye"></i> Preview Alert
+          </button>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="attendance-toolbar">
+        <div class="attendance-filters">
+          <div class="filter-item">
+            <label class="form-label">Class</label>
+            <select id="attendanceClassSelect" class="form-control">
+              <option value="Grade 10" selected>Grade 10</option>
+              <option value="Grade 9">Grade 9</option>
+              <option value="Grade 11">Grade 11</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label class="form-label">Section</label>
+            <select id="attendanceSectionSelect" class="form-control">
+              <option value="A" selected>Section A</option>
+              <option value="B">Section B</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label class="form-label">Date</label>
+            <input type="date" id="attendanceDatePicker" class="form-control">
+          </div>
+          <div class="filter-item" style="min-width: 200px;">
+            <label class="form-label">Search Student</label>
+            <div class="search-wrapper">
+              <i data-lucide="search"></i>
+              <input type="text" id="attendanceSearchInput" class="form-control" placeholder="Search name or ID...">
+            </div>
+          </div>
+        </div>
+
+        <div class="attendance-actions">
+          <button type="button" class="btn btn-outline" id="markAllPresentBtn">
+            <i data-lucide="check-check"></i> Select All Present
+          </button>
+          <button type="button" class="btn btn-outline" id="resetAttendanceBtn">
+            <i data-lucide="rotate-ccw"></i> Reset
+          </button>
+          <button type="button" class="btn btn-primary" id="saveAttendanceBtn">
+            <i data-lucide="save"></i> Save Attendance
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Summary Pills -->
+      <div class="attendance-summary-bar">
+        <span class="text-xs font-bold text-slate-500 uppercase">Roster Status:</span>
+        <div class="summary-pill total">
+          <span>Enrolled:</span>
+          <span class="summary-pill-count" id="countTotalStudents">0</span>
+        </div>
+        <div class="summary-pill present">
+          <span>Present:</span>
+          <span class="summary-pill-count" id="countPresentStudents">0</span>
+        </div>
+        <div class="summary-pill absent">
+          <span>Absent:</span>
+          <span class="summary-pill-count" id="countAbsentStudents">0</span>
+        </div>
+        <div class="summary-pill late">
+          <span>Late:</span>
+          <span class="summary-pill-count" id="countLateStudents">0</span>
+        </div>
+      </div>
+
+      <!-- Attendance Table -->
+      <div class="card">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Student ID</th>
+                  <th>Student Name</th>
+                  <th>Class</th>
+                  <th>Contact Info</th>
+                  <th>Attendance Status</th>
+                  <th style="min-width: 170px;">Action (P / A / L)</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceTableBody">
+                <!-- Managed by AttendanceController in js/attendance.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Notification Preview Modal -->
+  <div class="modal-overlay" id="notificationPreviewModal">
+    <div class="modal-card modal-md">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <h3 class="modal-title">Simulated Absent Alert</h3>
+          <span class="demo-badge">Demo</span>
+        </div>
+        <button class="modal-close-btn" data-close-modal="notificationPreviewModal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="demo-banner">
+          <i data-lucide="info" class="demo-banner-icon"></i>
+          <span class="demo-banner-text">
+            <strong>DEMO SIMULATION:</strong> This preview showcases the mock notification dispatched to guardians when attendance is marked absent.
+          </span>
+        </div>
+
+        <div class="preview-tabs">
+          <button type="button" class="preview-tab-btn active" id="tabBtnSMS">
+            <i data-lucide="smartphone"></i> SMS Preview
+          </button>
+          <button type="button" class="preview-tab-btn" id="tabBtnWA">
+            <i data-lucide="message-circle"></i> WhatsApp Preview
+          </button>
+        </div>
+
+        <!-- SMS -->
+        <div class="preview-tab-content active" id="previewContentSMS">
+          <div class="sms-phone-box">
+            <div class="sms-header">
+              <div class="sms-sender-name">EduTrack Institution Gateway</div>
+              <div class="sms-sender-sub">To: <span id="previewSmsRecipient">Parent</span></div>
+            </div>
+            <div class="sms-body">
+              <div class="sms-time">Today, Automatic Absent Alert</div>
+              <div class="sms-bubble">
+                <p>Dear Parent,</p>
+                <p style="margin: 0.5rem 0;">
+                  Your child <strong><span id="previewSmsStudentName">Alex Morgan</span></strong> has been marked <strong>ABSENT</strong> today.
+                </p>
+                <p style="margin-bottom: 0.5rem; font-size: 0.825rem; color: #475569;">
+                  Class: <strong><span id="previewSmsClass">Grade 10</span></strong><br>
+                  Section: <strong><span id="previewSmsSection">A</span></strong><br>
+                  Date: <strong><span id="previewSmsDate">2026-11-18</span></strong>
+                </p>
+                <p>Please contact the institution.</p>
+                <p style="margin-top: 0.5rem; font-weight: 700; color: #1e40af;">– EduTrack</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WhatsApp -->
+        <div class="preview-tab-content" id="previewContentWA">
+          <div class="whatsapp-chat-box">
+            <div class="whatsapp-chat-header">
+              <div class="whatsapp-header-user">
+                <div class="whatsapp-avatar"><i data-lucide="graduation-cap"></i></div>
+                <div>
+                  <div class="whatsapp-title">EduTrack Attendance Bot 🏫</div>
+                  <div class="whatsapp-status">To: <span id="previewWaRecipient">Parent</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="whatsapp-chat-body">
+              <div class="whatsapp-bubble">
+                <div class="whatsapp-bubble-header">
+                  <i data-lucide="bell" style="width:16px;height:16px;"></i>
+                  <span>EduTrack Attendance Alert</span>
+                </div>
+                <div>
+                  <p>Dear Parent / Guardian,</p>
+                  <p style="margin: 4px 0;">Attendance record update for today:</p>
+                  <ul style="margin: 6px 0 6px 1.25rem; font-size: 0.85rem;">
+                    <li>Student: <strong><span id="previewWaStudentName">Alex Morgan</span></strong></li>
+                    <li>Student ID: <strong><span id="previewWaStudentId">STU-1001</span></strong></li>
+                    <li>Class: <strong><span id="previewWaClass">Grade 10</span></strong></li>
+                    <li>Section: <strong><span id="previewWaSection">A</span></strong></li>
+                    <li>Date: <strong><span id="previewWaDate">2026-11-18</span></strong></li>
+                    <li>Status: <span style="color:#dc2626; font-weight:800;">🔴 ABSENT</span></li>
+                  </ul>
+                  <p style="font-size: 0.8rem; color: #475569;">Please contact EduTrack institution administration.</p>
+                </div>
+                <div class="whatsapp-meta">
+                  <span>Just now</span>
+                  <span class="whatsapp-ticks"><i data-lucide="check-check" style="width:14px;height:14px;"></i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" data-close-modal="notificationPreviewModal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/attendance.js"></script>
+  <script>
+    Auth.requireRole(['teacher', 'admin']);
+  </script>
+</body>
+</html>

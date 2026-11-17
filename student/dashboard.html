@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard - EduTrack</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="app-layout">
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="app-sidebar" id="appSidebar">
+    <div class="sidebar-header">
+      <a href="dashboard.html" class="brand-logo">
+        <div class="brand-icon-box"><i data-lucide="graduation-cap"></i></div>
+        <span class="brand-name">Edu<span>Track</span></span>
+      </a>
+    </div>
+
+    <div class="sidebar-content">
+      <div class="nav-section">
+        <span class="nav-section-title">Student Portal</span>
+        <a href="dashboard.html" class="nav-link active">
+          <i data-lucide="layout-dashboard"></i>
+          <span>My Attendance</span>
+        </a>
+        <a href="profile.html" class="nav-link">
+          <i data-lucide="user"></i>
+          <span>Profile & Parent Info</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <span class="nav-section-title">Switch Portals</span>
+        <a href="../admin/dashboard.html" class="nav-link" onclick="Auth.quickLogin('admin')">
+          <i data-lucide="shield"></i>
+          <span>Admin View</span>
+        </a>
+        <a href="../teacher/dashboard.html" class="nav-link" onclick="Auth.quickLogin('teacher')">
+          <i data-lucide="briefcase"></i>
+          <span>Teacher View</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <a href="../login.html" class="nav-link text-danger" onclick="Auth.logout()">
+          <i data-lucide="log-out"></i>
+          <span>Sign Out</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-snippet">
+        <img class="user-snippet-avatar js-user-avatar" src="" alt="Student">
+        <div class="user-snippet-info">
+          <div class="user-snippet-name js-user-name">Alex Morgan</div>
+          <div class="user-snippet-role">Grade 10 - Section A</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Container -->
+  <div class="app-main">
+    <header class="app-header">
+      <div class="header-left">
+        <button class="sidebar-toggle-btn" id="sidebarToggleBtn"><i data-lucide="menu"></i></button>
+        <div class="header-title-wrapper">
+          <h1 class="header-page-title">Student Attendance Dashboard</h1>
+          <span class="header-breadcrumbs">Student / Personal / Attendance</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="dropdown-wrapper">
+          <button class="user-profile-btn" id="userMenuBtn">
+            <img class="user-profile-avatar js-user-avatar" src="" alt="Profile">
+            <div class="user-profile-meta">
+              <span class="user-meta-name js-user-name">Alex Morgan</span>
+              <span class="user-meta-role">Student</span>
+            </div>
+            <i data-lucide="chevron-down" style="width:16px;height:16px;color:var(--slate-400);"></i>
+          </button>
+          <div class="dropdown-menu" id="userDropdown">
+            <a href="profile.html" class="dropdown-item"><i data-lucide="user"></i> My Profile</a>
+            <button class="dropdown-item text-danger" onclick="Auth.logout()"><i data-lucide="log-out"></i> Logout</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="page-header-row">
+        <div>
+          <h2 class="page-title">Hello, <span class="js-user-name">Alex</span> 👋</h2>
+          <p class="page-subtitle">Track your attendance compliance, view your calendar, and inspect sent notifications.</p>
+        </div>
+        <div>
+          <a href="profile.html" class="btn btn-outline">
+            <i data-lucide="user-check"></i> View Parent & Profile Details
+          </a>
+        </div>
+      </div>
+
+      <!-- 5 Metric Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Total Working Days</span>
+            <div class="stat-icon primary"><i data-lucide="calendar"></i></div>
+          </div>
+          <div class="stat-value text-slate-900" id="stuTotalDays">14</div>
+          <div class="stat-footer"><span class="stat-caption">School days this term</span></div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Present Days</span>
+            <div class="stat-icon success"><i data-lucide="user-check"></i></div>
+          </div>
+          <div class="stat-value text-success" id="stuPresentDays">12</div>
+          <div class="stat-footer"><span class="stat-trend up"><i data-lucide="check"></i> On time</span></div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Absent Days</span>
+            <div class="stat-icon danger"><i data-lucide="user-x"></i></div>
+          </div>
+          <div class="stat-value text-danger" id="stuAbsentDays">1</div>
+          <div class="stat-footer"><span class="stat-caption">Alert sent to guardian</span></div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Late Days</span>
+            <div class="stat-icon warning"><i data-lucide="clock"></i></div>
+          </div>
+          <div class="stat-value text-warning" id="stuLateDays">1</div>
+          <div class="stat-footer"><span class="stat-caption">Tardy arrival</span></div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Attendance Rate</span>
+            <div class="stat-icon accent"><i data-lucide="percent"></i></div>
+          </div>
+          <div class="stat-value text-primary" id="stuAttendanceRate">85.7%</div>
+          <div class="stat-footer">
+            <span class="badge badge-present" id="stuStatusPill">Good Standing</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Layout: Visual Attendance Calendar & Recent History -->
+      <div class="charts-grid">
+        <!-- Visual Monthly Attendance Calendar -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i data-lucide="calendar-days"></i>
+              <span>Monthly Attendance Calendar</span>
+            </div>
+            <div style="display:flex; gap:0.75rem; align-items:center; font-size:0.75rem;">
+              <span style="display:flex; align-items:center; gap:4px;"><span class="calendar-dot present"></span> Present</span>
+              <span style="display:flex; align-items:center; gap:4px;"><span class="calendar-dot absent"></span> Absent</span>
+              <span style="display:flex; align-items:center; gap:4px;"><span class="calendar-dot late"></span> Late</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="calendar-month-header">
+              <strong style="font-size:1.1rem; color:var(--slate-900);" id="calMonthTitle">Current Month</strong>
+              <span class="text-xs text-muted">Term 1 (2026-2027)</span>
+            </div>
+
+            <div class="calendar-grid">
+              <div class="calendar-day-header">Sun</div>
+              <div class="calendar-day-header">Mon</div>
+              <div class="calendar-day-header">Tue</div>
+              <div class="calendar-day-header">Wed</div>
+              <div class="calendar-day-header">Thu</div>
+              <div class="calendar-day-header">Fri</div>
+              <div class="calendar-day-header">Sat</div>
+            </div>
+
+            <!-- Calendar Cells Grid -->
+            <div class="calendar-grid" id="calendarDaysGrid" style="margin-top: 6px;">
+              <!-- Generated dynamically via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Notification History for this Student -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i data-lucide="bell" style="color:var(--accent);"></i>
+              <span>Parent & Student Alerts</span>
+            </div>
+            <span class="demo-badge">Demo</span>
+          </div>
+          <div class="card-body p-0">
+            <div class="notif-list" id="stuNotifsList" style="max-height: 440px;">
+              <!-- Injected via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Attendance History Table -->
+      <div class="card" style="margin-top: 1.5rem;">
+        <div class="card-header">
+          <div class="card-title">
+            <i data-lucide="history"></i>
+            <span>Detailed Attendance Log</span>
+          </div>
+          <span class="text-xs text-muted">Official Academic Records</span>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Class / Section</th>
+                  <th>Status</th>
+                  <th>Recorded By</th>
+                  <th>Remarks</th>
+                </tr>
+              </thead>
+              <tbody id="stuAttendanceHistoryBody">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script>
+    Auth.requireRole(['student', 'admin']);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderStudentDashboard();
+    });
+
+    function renderStudentDashboard() {
+      const user = Auth.getUser() || { studentId: 'STU-1001', name: 'Alex Morgan' };
+      const studentId = user.studentId || 'STU-1001';
+      
+      const records = Storage.getAttendance({ studentId });
+      const notifications = Storage.getNotifications({ studentId });
+
+      const totalDays = records.length || 14;
+      const presentDays = records.filter(r => r.status === 'present').length;
+      const absentDays = records.filter(r => r.status === 'absent').length;
+      const lateDays = records.filter(r => r.status === 'late').length;
+
+      // Formula: (Present Days / Total Days) * 100
+      const rate = totalDays > 0 ? ((presentDays / totalDays) * 100).toFixed(1) : 85.7;
+
+      document.getElementById('stuTotalDays').textContent = totalDays;
+      document.getElementById('stuPresentDays').textContent = presentDays;
+      document.getElementById('stuAbsentDays').textContent = absentDays;
+      document.getElementById('stuLateDays').textContent = lateDays;
+      document.getElementById('stuAttendanceRate').textContent = `${rate}%`;
+
+      const pill = document.getElementById('stuStatusPill');
+      if (parseFloat(rate) >= 85) {
+        pill.className = 'badge badge-present';
+        pill.textContent = 'Excellent (>= 85%)';
+      } else if (parseFloat(rate) >= 75) {
+        pill.className = 'badge badge-late';
+        pill.textContent = 'Average (75-84%)';
+      } else {
+        pill.className = 'badge badge-absent';
+        pill.textContent = 'Critical (< 75%)';
+      }
+
+      // 1. Render Calendar
+      renderCalendar(records);
+
+      // 2. Render Notifications List
+      renderStudentNotifications(notifications);
+
+      // 3. Render Attendance Table
+      renderStudentHistoryTable(records);
+    }
+
+    function renderCalendar(records) {
+      const container = document.getElementById('calendarDaysGrid');
+      if (!container) return;
+
+      const dateStatusMap = {};
+      records.forEach(r => {
+        dateStatusMap[r.date] = r.status;
+      });
+
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth();
+
+      document.getElementById('calMonthTitle').textContent = today.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+      // First day of month
+      const firstDay = new Date(year, month, 1).getDay();
+      // Total days in month
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      let cellsHtml = '';
+
+      // Blank cells for preceding days
+      for (let i = 0; i < firstDay; i++) {
+        cellsHtml += `<div class="calendar-day-cell inactive"></div>`;
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dayOfWeek = new Date(year, month, day).getDay();
+        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+
+        let status = dateStatusMap[dateKey];
+        let statusClass = '';
+        let dotHtml = '';
+
+        if (status === 'present') {
+          statusClass = 'status-present';
+          dotHtml = '<span class="calendar-dot present"></span>';
+        } else if (status === 'absent') {
+          statusClass = 'status-absent';
+          dotHtml = '<span class="calendar-dot absent"></span>';
+        } else if (status === 'late') {
+          statusClass = 'status-late';
+          dotHtml = '<span class="calendar-dot late"></span>';
+        } else if (isWeekend) {
+          statusClass = 'inactive';
+        }
+
+        cellsHtml += `
+          <div class="calendar-day-cell ${statusClass}" title="${dateKey} ${status ? status.toUpperCase() : ''}">
+            <span>${day}</span>
+            ${dotHtml}
+          </div>
+        `;
+      }
+
+      container.innerHTML = cellsHtml;
+    }
+
+    function renderStudentNotifications(notifications) {
+      const list = document.getElementById('stuNotifsList');
+      if (!list) return;
+
+      if (notifications.length === 0) {
+        list.innerHTML = `
+          <div class="p-4 text-center text-muted">
+            <i data-lucide="bell-off" style="width:36px;height:36px;margin:0 auto 0.5rem auto;opacity:0.4;"></i>
+            <p class="font-semibold text-sm">No notification alerts recorded</p>
+          </div>
+        `;
+        App.initIcons();
+        return;
+      }
+
+      list.innerHTML = notifications.map(n => `
+        <div class="notif-item">
+          <div class="notif-badge-icon ${n.channel.toLowerCase()}">
+            <i data-lucide="${n.channel === 'WhatsApp' ? 'message-circle' : 'smartphone'}"></i>
+          </div>
+          <div class="notif-content">
+            <div class="notif-header">
+              <span class="notif-target">${n.channel} Alert to ${n.recipientType}</span>
+              <span class="badge badge-${n.status.toLowerCase()}">${n.status}</span>
+            </div>
+            <p class="notif-text">${n.content}</p>
+            <span class="notif-time">${n.date}</span>
+          </div>
+        </div>
+      `).join('');
+
+      App.initIcons();
+    }
+
+    function renderStudentHistoryTable(records) {
+      const tbody = document.getElementById('stuAttendanceHistoryBody');
+      if (!tbody) return;
+
+      if (records.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No attendance entries recorded.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = records.map(r => `
+        <tr>
+          <td><strong class="text-slate-800">${r.date}</strong></td>
+          <td><span class="badge" style="background:#f1f5f9; color:#334155;">${r.class} - ${r.section}</span></td>
+          <td><span class="badge badge-${r.status}"><span class="badge-dot"></span> ${r.status}</span></td>
+          <td><span class="text-xs text-slate-600">${r.recordedBy || 'Class Faculty'}</span></td>
+          <td><span class="text-xs text-muted">${r.remarks || 'Regular session'}</span></td>
+        </tr>
+      `).join('');
+
+      App.initIcons();
+    }
+  </script>
+</body>
+</html>

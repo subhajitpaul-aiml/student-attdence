@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Profile & Parent Information - EduTrack</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="app-layout">
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="app-sidebar" id="appSidebar">
+    <div class="sidebar-header">
+      <a href="dashboard.html" class="brand-logo">
+        <div class="brand-icon-box"><i data-lucide="graduation-cap"></i></div>
+        <span class="brand-name">Edu<span>Track</span></span>
+      </a>
+    </div>
+
+    <div class="sidebar-content">
+      <div class="nav-section">
+        <span class="nav-section-title">Student Portal</span>
+        <a href="dashboard.html" class="nav-link">
+          <i data-lucide="layout-dashboard"></i>
+          <span>My Attendance</span>
+        </a>
+        <a href="profile.html" class="nav-link active">
+          <i data-lucide="user"></i>
+          <span>Profile & Parent Info</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <span class="nav-section-title">Switch Portals</span>
+        <a href="../admin/dashboard.html" class="nav-link" onclick="Auth.quickLogin('admin')">
+          <i data-lucide="shield"></i>
+          <span>Admin View</span>
+        </a>
+        <a href="../teacher/dashboard.html" class="nav-link" onclick="Auth.quickLogin('teacher')">
+          <i data-lucide="briefcase"></i>
+          <span>Teacher View</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <a href="../login.html" class="nav-link text-danger" onclick="Auth.logout()">
+          <i data-lucide="log-out"></i>
+          <span>Sign Out</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-snippet">
+        <img class="user-snippet-avatar js-user-avatar" src="" alt="Student">
+        <div class="user-snippet-info">
+          <div class="user-snippet-name js-user-name">Alex Morgan</div>
+          <div class="user-snippet-role">Grade 10 - Section A</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Container -->
+  <div class="app-main">
+    <header class="app-header">
+      <div class="header-left">
+        <button class="sidebar-toggle-btn" id="sidebarToggleBtn"><i data-lucide="menu"></i></button>
+        <div class="header-title-wrapper">
+          <h1 class="header-page-title">Personal Profile & Parent Info</h1>
+          <span class="header-breadcrumbs">Student / Profile / Guardian Information</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="dropdown-wrapper">
+          <button class="user-profile-btn" id="userMenuBtn">
+            <img class="user-profile-avatar js-user-avatar" src="" alt="Profile">
+            <div class="user-profile-meta">
+              <span class="user-meta-name js-user-name">Alex Morgan</span>
+              <span class="user-meta-role">Student</span>
+            </div>
+            <i data-lucide="chevron-down" style="width:16px;height:16px;color:var(--slate-400);"></i>
+          </button>
+          <div class="dropdown-menu" id="userDropdown">
+            <button class="dropdown-item text-danger" onclick="Auth.logout()"><i data-lucide="log-out"></i> Logout</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="page-header-row">
+        <div>
+          <h2 class="page-title">Student Profile & Parent Information</h2>
+          <p class="page-subtitle">Inspect registered institutional identity, guardian contacts, and notification channels.</p>
+        </div>
+        <div>
+          <a href="dashboard.html" class="btn btn-outline">
+            <i data-lucide="arrow-left"></i> Back to Attendance
+          </a>
+        </div>
+      </div>
+
+      <!-- Identity Header Card -->
+      <div class="card" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);">
+        <div class="card-body" style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
+          <img id="stuProfileAvatar" src="" class="user-avatar" style="width:84px; height:84px; border-radius:50%; border:3px solid var(--white); box-shadow:var(--shadow-md);" alt="Avatar">
+          <div style="flex:1;">
+            <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+              <h2 id="stuProfileFullName" style="font-size:1.5rem; font-weight:800; color:var(--slate-900);">Alex Morgan</h2>
+              <span id="stuProfileBadgeId" class="font-mono badge" style="background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe;">STU-1001</span>
+              <span class="badge badge-present">Enrolled Active</span>
+            </div>
+            <p class="text-sm text-secondary" style="margin-top:4px;">
+              Enrolled in <strong id="stuProfileClassMeta">Grade 10 - Section A</strong> &bull; Class Teacher: Sarah Jenkins
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two Cards Grid: Student Personal Details & Parent / Guardian Contact -->
+      <div class="grid-2col">
+        <!-- Student Details Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i data-lucide="user"></i>
+              <span>Student Personal Details</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <form id="studentEditForm" onsubmit="saveStudentSelfProfile(event)">
+              <div class="form-group">
+                <label class="form-label">Full Legal Name</label>
+                <input type="text" id="profStudentName" class="form-control" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Institution Email</label>
+                <input type="email" id="profStudentEmail" class="form-control" readonly>
+              </div>
+
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                <div class="form-group">
+                  <label class="form-label">Phone Number</label>
+                  <input type="tel" id="profStudentPhone" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Gender</label>
+                  <input type="text" id="profStudentGender" class="form-control" readonly>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Date of Birth</label>
+                <input type="date" id="profStudentDOB" class="form-control" readonly>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Residential Address</label>
+                <textarea id="profStudentAddress" class="form-control" rows="2"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="margin-top:0.5rem;">
+                <i data-lucide="check"></i> Update Personal Info
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Parent / Guardian Information Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i data-lucide="users"></i>
+              <span>Parent & Guardian Information</span>
+            </div>
+            <span class="badge badge-channel-whatsapp"><i data-lucide="message-circle" style="width:12px;height:12px;"></i> WhatsApp Alerts Active</span>
+          </div>
+          <div class="card-body">
+            <form id="parentEditForm" onsubmit="saveParentInfo(event)">
+              <div class="form-group">
+                <label class="form-label">Parent / Guardian Full Name</label>
+                <input type="text" id="profParentName" class="form-control" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Parent SMS Phone Number</label>
+                <input type="tel" id="profParentPhone" class="form-control" required>
+                <span class="form-helper">Destination number for automated simulated SMS absent notifications.</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Parent WhatsApp Number</label>
+                <input type="tel" id="profParentWhatsApp" class="form-control" required>
+                <span class="form-helper">Destination number for WhatsApp bot alert simulation.</span>
+              </div>
+
+              <div style="border-top:1px solid var(--slate-100); padding-top:1rem; margin-top:1rem;">
+                <h4 class="font-bold text-sm text-slate-800 mb-2">Notification Consent Preferences</h4>
+                <div style="display:flex; flex-direction:column; gap:0.65rem;">
+                  <label class="form-check text-xs font-semibold">
+                    <input type="checkbox" id="profConsentSMS" checked>
+                    <span>Receive automated absent alerts via SMS</span>
+                  </label>
+                  <label class="form-check text-xs font-semibold">
+                    <input type="checkbox" id="profConsentWA" checked>
+                    <span>Receive automated attendance status via WhatsApp</span>
+                  </label>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="margin-top:1.25rem;">
+                <i data-lucide="save"></i> Update Guardian Info
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script>
+    Auth.requireRole(['student', 'admin']);
+
+    let activeStudent = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProfileData();
+    });
+
+    function loadProfileData() {
+      const user = Auth.getUser() || { studentId: 'STU-1001' };
+      const studentId = user.studentId || 'STU-1001';
+      activeStudent = Storage.getStudentById(studentId) || Storage.getStudents()[0];
+
+      if (!activeStudent) return;
+
+      // Identity Header
+      document.getElementById('stuProfileAvatar').src = activeStudent.avatar || 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80';
+      document.getElementById('stuProfileFullName').textContent = activeStudent.name;
+      document.getElementById('stuProfileBadgeId').textContent = activeStudent.id;
+      document.getElementById('stuProfileClassMeta').textContent = `${activeStudent.class} - Section ${activeStudent.section}`;
+
+      // Student Form
+      document.getElementById('profStudentName').value = activeStudent.name;
+      document.getElementById('profStudentEmail').value = activeStudent.email;
+      document.getElementById('profStudentPhone').value = activeStudent.phone || '';
+      document.getElementById('profStudentGender').value = activeStudent.gender || 'Male';
+      document.getElementById('profStudentDOB').value = activeStudent.dob || '';
+      document.getElementById('profStudentAddress').value = activeStudent.address || '';
+
+      // Parent Form
+      document.getElementById('profParentName').value = activeStudent.parentName || '';
+      document.getElementById('profParentPhone').value = activeStudent.parentPhone || '';
+      document.getElementById('profParentWhatsApp').value = activeStudent.parentWhatsApp || activeStudent.parentPhone || '';
+      document.getElementById('profConsentSMS').checked = !!activeStudent.consentSMS;
+      document.getElementById('profConsentWA').checked = !!activeStudent.consentWhatsApp;
+    }
+
+    function saveStudentSelfProfile(e) {
+      e.preventDefault();
+      if (!activeStudent) return;
+
+      activeStudent.name = document.getElementById('profStudentName').value.trim();
+      activeStudent.phone = document.getElementById('profStudentPhone').value.trim();
+      activeStudent.address = document.getElementById('profStudentAddress').value.trim();
+
+      Storage.saveStudent(activeStudent);
+      loadProfileData();
+      App.showToast('Profile Updated', 'Personal details saved to local storage.', 'success');
+    }
+
+    function saveParentInfo(e) {
+      e.preventDefault();
+      if (!activeStudent) return;
+
+      activeStudent.parentName = document.getElementById('profParentName').value.trim();
+      activeStudent.parentPhone = document.getElementById('profParentPhone').value.trim();
+      activeStudent.parentWhatsApp = document.getElementById('profParentWhatsApp').value.trim();
+      activeStudent.consentSMS = document.getElementById('profConsentSMS').checked;
+      activeStudent.consentWhatsApp = document.getElementById('profConsentWA').checked;
+
+      Storage.saveStudent(activeStudent);
+      loadProfileData();
+      App.showToast('Guardian Info Saved', 'Parent contact & notification consent preferences updated.', 'success');
+    }
+  </script>
+</body>
+</html>

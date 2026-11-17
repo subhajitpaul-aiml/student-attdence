@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Management - EduTrack</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="app-layout">
+
+  <!-- Mobile Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="app-sidebar" id="appSidebar">
+    <div class="sidebar-header">
+      <a href="dashboard.html" class="brand-logo">
+        <div class="brand-icon-box"><i data-lucide="graduation-cap"></i></div>
+        <span class="brand-name">Edu<span>Track</span></span>
+      </a>
+    </div>
+
+    <div class="sidebar-content">
+      <div class="nav-section">
+        <span class="nav-section-title">Main Portal</span>
+        <a href="dashboard.html" class="nav-link">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="attendance.html" class="nav-link">
+          <i data-lucide="calendar-check-2"></i>
+          <span>Take Attendance</span>
+        </a>
+        <a href="reports.html" class="nav-link">
+          <i data-lucide="bar-chart-3"></i>
+          <span>Attendance Reports</span>
+        </a>
+        <a href="notifications.html" class="nav-link">
+          <i data-lucide="bell"></i>
+          <span>Notifications</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <span class="nav-section-title">Institution Management</span>
+        <a href="students.html" class="nav-link active">
+          <i data-lucide="users"></i>
+          <span>Students</span>
+        </a>
+        <a href="teachers.html" class="nav-link">
+          <i data-lucide="briefcase"></i>
+          <span>Faculty & Teachers</span>
+        </a>
+        <a href="classes.html" class="nav-link">
+          <i data-lucide="school"></i>
+          <span>Classes & Sections</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <span class="nav-section-title">System</span>
+        <a href="settings.html" class="nav-link">
+          <i data-lucide="settings"></i>
+          <span>Settings & Gateways</span>
+        </a>
+        <a href="../login.html" class="nav-link text-danger" onclick="Auth.logout()">
+          <i data-lucide="log-out"></i>
+          <span>Sign Out</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-snippet">
+        <img class="user-snippet-avatar js-user-avatar" src="" alt="Admin">
+        <div class="user-snippet-info">
+          <div class="user-snippet-name js-user-name">Loading...</div>
+          <div class="user-snippet-role js-user-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Container -->
+  <div class="app-main">
+    <!-- Topbar -->
+    <header class="app-header">
+      <div class="header-left">
+        <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle Navigation">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="header-title-wrapper">
+          <h1 class="header-page-title">Student Directory</h1>
+          <span class="header-breadcrumbs">Admin / Management / Students</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- Notification Dropdown -->
+        <div class="dropdown-wrapper">
+          <button class="header-action-btn" id="notifMenuBtn">
+            <i data-lucide="bell"></i>
+            <span class="badge-unread-dot" id="headerNotifBadge"></span>
+          </button>
+          <div class="dropdown-menu notif-dropdown" id="notifDropdown">
+            <div class="dropdown-header" style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="font-bold text-sm">Simulated Alerts</span>
+              <a href="notifications.html" class="text-xs text-primary font-semibold">View All</a>
+            </div>
+            <div class="notif-list" id="headerNotifList"></div>
+          </div>
+        </div>
+
+        <!-- Profile Dropdown -->
+        <div class="dropdown-wrapper">
+          <button class="user-profile-btn" id="userMenuBtn">
+            <img class="user-profile-avatar js-user-avatar" src="" alt="Profile">
+            <div class="user-profile-meta">
+              <span class="user-meta-name js-user-name">Admin</span>
+              <span class="user-meta-role">Administrator</span>
+            </div>
+            <i data-lucide="chevron-down" style="width:16px;height:16px;color:var(--slate-400);"></i>
+          </button>
+          <div class="dropdown-menu" id="userDropdown">
+            <a href="settings.html" class="dropdown-item"><i data-lucide="settings"></i> System Settings</a>
+            <button class="dropdown-item text-danger" onclick="Auth.logout()"><i data-lucide="log-out"></i> Logout</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="app-content">
+      <div class="page-header-row">
+        <div>
+          <h2 class="page-title">Student Management</h2>
+          <p class="page-subtitle" id="studentCountDisplay">Loading student enrollment list...</p>
+        </div>
+        <div style="display:flex; gap:0.75rem;">
+          <button class="btn btn-outline" id="exportStudentsBtn">
+            <i data-lucide="download"></i> Export CSV
+          </button>
+          <button class="btn btn-primary" id="addStudentBtn">
+            <i data-lucide="user-plus"></i> Add New Student
+          </button>
+        </div>
+      </div>
+
+      <!-- Filters & Search Toolbar -->
+      <div class="card" style="padding: 1.1rem 1.4rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+          <div style="display: flex; gap: 1rem; flex: 1; min-width: 260px; max-width: 480px;">
+            <div class="search-wrapper">
+              <i data-lucide="search"></i>
+              <input type="text" id="studentSearchInput" class="form-control" placeholder="Search by name, ID, email or parent...">
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.85rem; align-items: center;">
+            <select id="studentClassFilter" class="form-control" style="width: 170px;">
+              <option value="all">All Classes</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Students Table Card -->
+      <div class="card">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Student ID</th>
+                  <th>Student Profile</th>
+                  <th>Class & Sec</th>
+                  <th>Phone</th>
+                  <th>Parent / Contact</th>
+                  <th>Channel Consent</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="studentsTableBody">
+                <!-- Rendered by js/students.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add / Edit Student Modal -->
+  <div class="modal-overlay" id="studentFormModal">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title" id="studentModalTitle">Add New Student</h3>
+        <button class="modal-close-btn" data-close-modal="studentFormModal"><i data-lucide="x"></i></button>
+      </div>
+      <form id="studentForm">
+        <div class="modal-body">
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Student ID <span class="required">*</span></label>
+              <input type="text" id="studentIdField" class="form-control" required readonly>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Full Name <span class="required">*</span></label>
+              <input type="text" id="studentFullName" class="form-control" placeholder="e.g. Alex Morgan" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Institution Email <span class="required">*</span></label>
+              <input type="email" id="studentEmail" class="form-control" placeholder="alex.morgan@edutrack.edu" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Student Phone</label>
+              <input type="tel" id="studentPhone" class="form-control" placeholder="+1 (555) 000-0000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Date of Birth</label>
+              <input type="date" id="studentDOB" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Gender</label>
+              <select id="studentGender" class="form-control">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Assigned Class <span class="required">*</span></label>
+              <select id="studentFormClass" class="form-control" required>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Section <span class="required">*</span></label>
+              <select id="studentFormSection" class="form-control" required>
+                <option value="A">Section A</option>
+                <option value="B">Section B</option>
+                <option value="C">Section C</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Residential Address</label>
+            <input type="text" id="studentAddress" class="form-control" placeholder="e.g. 742 Evergreen Terrace, Springfield, CA">
+          </div>
+
+          <!-- Parent / Guardian Information Section -->
+          <div style="margin: 1.25rem 0 0.75rem 0; padding-top: 1rem; border-top: 1px solid var(--slate-200);">
+            <h4 class="font-bold text-slate-900 text-sm mb-3">Parent / Guardian Information & Notification Consent</h4>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Parent Name <span class="required">*</span></label>
+                <input type="text" id="studentParentName" class="form-control" placeholder="Parent / Guardian" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Parent Phone (SMS) <span class="required">*</span></label>
+                <input type="tel" id="studentParentPhone" class="form-control" placeholder="+1 (555) 000-0000" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Parent WhatsApp Number</label>
+                <input type="tel" id="studentParentWhatsApp" class="form-control" placeholder="+1 (555) 000-0000">
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 1.5rem; margin-top: 0.5rem;">
+              <label class="form-check text-xs font-semibold">
+                <input type="checkbox" id="studentConsentSMS" checked>
+                <span>Consent to receive automated SMS alerts</span>
+              </label>
+              <label class="form-check text-xs font-semibold">
+                <input type="checkbox" id="studentConsentWA" checked>
+                <span>Consent to receive automated WhatsApp alerts</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal="studentFormModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveStudentBtn">Save Student Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- View Student Profile Modal with 3 Tabs -->
+  <div class="modal-overlay" id="studentProfileModal">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title">Student Profile</h3>
+        <button class="modal-close-btn" data-close-modal="studentProfileModal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <!-- Top Identity Header -->
+        <div style="display: flex; align-items: center; gap: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--slate-100); margin-bottom: 1.25rem;">
+          <img id="viewStudentAvatar" class="user-avatar" style="width: 64px; height: 64px; border-radius: 50%;" src="" alt="Avatar">
+          <div>
+            <h3 id="viewStudentName" style="font-size: 1.3rem; font-weight: 800; color: var(--slate-900);">Alex Morgan</h3>
+            <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 4px;">
+              <span id="viewStudentId" class="badge" style="background:#f1f5f9; color:#475569;">STU-1001</span>
+              <span id="viewStudentClass" class="badge badge-present">Grade 10 - Section A</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Tabs Navigation -->
+        <div class="preview-tabs">
+          <button type="button" class="preview-tab-btn active" id="profTabBtnOverview" onclick="switchProfileTab('overview')">
+            <i data-lucide="user"></i> Personal Overview
+          </button>
+          <button type="button" class="preview-tab-btn" id="profTabBtnParent" onclick="switchProfileTab('parent')">
+            <i data-lucide="users"></i> Parent & Guardian
+          </button>
+          <button type="button" class="preview-tab-btn" id="profTabBtnAttendance" onclick="switchProfileTab('attendance')">
+            <i data-lucide="calendar"></i> Attendance Logs
+          </button>
+        </div>
+
+        <!-- Tab 1: Personal Overview -->
+        <div class="preview-tab-content active" id="profContentOverview">
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; font-size: 0.875rem;">
+            <div>
+              <span class="text-xs text-muted font-semibold uppercase">Email</span>
+              <p class="font-bold text-slate-800" id="viewStudentEmail">-</p>
+            </div>
+            <div>
+              <span class="text-xs text-muted font-semibold uppercase">Phone</span>
+              <p class="font-bold text-slate-800" id="viewStudentPhone">-</p>
+            </div>
+            <div>
+              <span class="text-xs text-muted font-semibold uppercase">Date of Birth</span>
+              <p class="font-bold text-slate-800" id="viewStudentDOB">-</p>
+            </div>
+            <div>
+              <span class="text-xs text-muted font-semibold uppercase">Gender</span>
+              <p class="font-bold text-slate-800" id="viewStudentGender">-</p>
+            </div>
+            <div style="grid-column: span 2;">
+              <span class="text-xs text-muted font-semibold uppercase">Residential Address</span>
+              <p class="font-bold text-slate-800" id="viewStudentAddress">-</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Parent & Guardian Details -->
+        <div class="preview-tab-content" id="profContentParent">
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; font-size: 0.875rem;">
+            <div>
+              <span class="text-xs text-muted font-semibold uppercase">Guardian Name</span>
+              <p class="font-bold text-slate-800" id="viewParentName">-</p>
+            </div>
+            <div>
+              <span class="text-xs text-muted font-semibold uppercase">Contact Phone (SMS)</span>
+              <p class="font-bold text-slate-800" id="viewParentPhone">-</p>
+            </div>
+            <div>
+              <span class="text-xs text-muted font-semibold uppercase">WhatsApp Alert Number</span>
+              <p class="font-bold text-slate-800" id="viewParentWhatsApp">-</p>
+            </div>
+            <div>
+              <span class="text-xs text-muted font-semibold uppercase">SMS Opt-In</span>
+              <p id="viewConsentSMSBadge" class="badge badge-present mt-1">Opted In</p>
+            </div>
+            <div>
+              <span class="text-xs text-muted font-semibold uppercase">WhatsApp Opt-In</span>
+              <p id="viewConsentWABadge" class="badge badge-present mt-1">Opted In</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Attendance Analytics -->
+        <div class="preview-tab-content" id="profContentAttendance">
+          <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; text-align: center; margin-bottom: 1.25rem;">
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:0.5rem;">
+              <span class="text-xs text-muted">Total Days</span>
+              <div class="font-bold text-lg" id="viewTotalWorkingDays">0</div>
+            </div>
+            <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:8px; padding:0.5rem; color:#065f46;">
+              <span class="text-xs">Present</span>
+              <div class="font-bold text-lg" id="viewPresentDays">0</div>
+            </div>
+            <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:0.5rem; color:#991b1b;">
+              <span class="text-xs">Absent</span>
+              <div class="font-bold text-lg" id="viewAbsentDays">0</div>
+            </div>
+            <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:0.5rem; color:#92400e;">
+              <span class="text-xs">Late</span>
+              <div class="font-bold text-lg" id="viewLateDays">0</div>
+            </div>
+            <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:0.5rem; color:#1e40af;">
+              <span class="text-xs">Rate</span>
+              <div class="font-bold text-lg" id="viewAttendanceRate">0%</div>
+            </div>
+          </div>
+
+          <table class="table" style="font-size:0.8rem;">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Recorded By</th>
+                <th>Remarks</th>
+              </tr>
+            </thead>
+            <tbody id="viewAttendanceHistoryBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" data-close-modal="studentProfileModal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/students.js"></script>
+  <script>
+    Auth.requireRole(['admin']);
+
+    function switchProfileTab(tab) {
+      document.querySelectorAll('#studentProfileModal .preview-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#studentProfileModal .preview-tab-content').forEach(c => c.classList.remove('active'));
+
+      if (tab === 'overview') {
+        document.getElementById('profTabBtnOverview').classList.add('active');
+        document.getElementById('profContentOverview').classList.add('active');
+      } else if (tab === 'parent') {
+        document.getElementById('profTabBtnParent').classList.add('active');
+        document.getElementById('profContentParent').classList.add('active');
+      } else if (tab === 'attendance') {
+        document.getElementById('profTabBtnAttendance').classList.add('active');
+        document.getElementById('profContentAttendance').classList.add('active');
+      }
+    }
+  </script>
+</body>
+</html>

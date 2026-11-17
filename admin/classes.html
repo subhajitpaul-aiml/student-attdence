@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Class Management - EduTrack</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="app-layout">
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="app-sidebar" id="appSidebar">
+    <div class="sidebar-header">
+      <a href="dashboard.html" class="brand-logo">
+        <div class="brand-icon-box"><i data-lucide="graduation-cap"></i></div>
+        <span class="brand-name">Edu<span>Track</span></span>
+      </a>
+    </div>
+
+    <div class="sidebar-content">
+      <div class="nav-section">
+        <span class="nav-section-title">Main Portal</span>
+        <a href="dashboard.html" class="nav-link">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="attendance.html" class="nav-link">
+          <i data-lucide="calendar-check-2"></i>
+          <span>Take Attendance</span>
+        </a>
+        <a href="reports.html" class="nav-link">
+          <i data-lucide="bar-chart-3"></i>
+          <span>Attendance Reports</span>
+        </a>
+        <a href="notifications.html" class="nav-link">
+          <i data-lucide="bell"></i>
+          <span>Notifications</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <span class="nav-section-title">Institution Management</span>
+        <a href="students.html" class="nav-link">
+          <i data-lucide="users"></i>
+          <span>Students</span>
+        </a>
+        <a href="teachers.html" class="nav-link">
+          <i data-lucide="briefcase"></i>
+          <span>Faculty & Teachers</span>
+        </a>
+        <a href="classes.html" class="nav-link active">
+          <i data-lucide="school"></i>
+          <span>Classes & Sections</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <span class="nav-section-title">System</span>
+        <a href="settings.html" class="nav-link">
+          <i data-lucide="settings"></i>
+          <span>Settings & Gateways</span>
+        </a>
+        <a href="../login.html" class="nav-link text-danger" onclick="Auth.logout()">
+          <i data-lucide="log-out"></i>
+          <span>Sign Out</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-snippet">
+        <img class="user-snippet-avatar js-user-avatar" src="" alt="Admin">
+        <div class="user-snippet-info">
+          <div class="user-snippet-name js-user-name">Loading...</div>
+          <div class="user-snippet-role js-user-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Container -->
+  <div class="app-main">
+    <header class="app-header">
+      <div class="header-left">
+        <button class="sidebar-toggle-btn" id="sidebarToggleBtn"><i data-lucide="menu"></i></button>
+        <div class="header-title-wrapper">
+          <h1 class="header-page-title">Class & Section Management</h1>
+          <span class="header-breadcrumbs">Admin / Management / Classes</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="dropdown-wrapper">
+          <button class="header-action-btn" id="notifMenuBtn">
+            <i data-lucide="bell"></i>
+            <span class="badge-unread-dot" id="headerNotifBadge"></span>
+          </button>
+          <div class="dropdown-menu notif-dropdown" id="notifDropdown">
+            <div class="dropdown-header" style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="font-bold text-sm">Simulated Alerts</span>
+              <a href="notifications.html" class="text-xs text-primary font-semibold">View All</a>
+            </div>
+            <div class="notif-list" id="headerNotifList"></div>
+          </div>
+        </div>
+
+        <div class="dropdown-wrapper">
+          <button class="user-profile-btn" id="userMenuBtn">
+            <img class="user-profile-avatar js-user-avatar" src="" alt="Profile">
+            <div class="user-profile-meta">
+              <span class="user-meta-name js-user-name">Admin</span>
+              <span class="user-meta-role">Administrator</span>
+            </div>
+            <i data-lucide="chevron-down" style="width:16px;height:16px;color:var(--slate-400);"></i>
+          </button>
+          <div class="dropdown-menu" id="userDropdown">
+            <a href="settings.html" class="dropdown-item"><i data-lucide="settings"></i> System Settings</a>
+            <button class="dropdown-item text-danger" onclick="Auth.logout()"><i data-lucide="log-out"></i> Logout</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="page-header-row">
+        <div>
+          <h2 class="page-title">Class Directory</h2>
+          <p class="page-subtitle" id="classesCountDisplay">Manage academic grades, assigned faculty, and enrolled learners.</p>
+        </div>
+        <button class="btn btn-primary" id="addClassBtn" onclick="openClassModal()">
+          <i data-lucide="plus-circle"></i> Add Class / Section
+        </button>
+      </div>
+
+      <!-- Classes Grid of Cards -->
+      <div class="stats-grid" id="classesGrid" style="grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));">
+        <!-- Rendered via JS -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Add / Edit Class Modal -->
+  <div class="modal-overlay" id="classFormModal">
+    <div class="modal-card modal-md">
+      <div class="modal-header">
+        <h3 class="modal-title" id="classModalTitle">Add Class</h3>
+        <button class="modal-close-btn" data-close-modal="classFormModal"><i data-lucide="x"></i></button>
+      </div>
+      <form id="classForm" onsubmit="handleClassSubmit(event)">
+        <div class="modal-body">
+          <input type="hidden" id="classIdField">
+          <div class="form-group">
+            <label class="form-label">Grade / Class Name <span class="required">*</span></label>
+            <input type="text" id="classNameField" class="form-control" placeholder="e.g. Grade 10" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Section <span class="required">*</span></label>
+            <input type="text" id="classSectionField" class="form-control" placeholder="e.g. A" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Classroom / Location</label>
+            <input type="text" id="classRoomField" class="form-control" placeholder="e.g. Room 301">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Assigned Class Teacher <span class="required">*</span></label>
+            <select id="classTeacherSelect" class="form-control" required>
+              <!-- Populated via teachers list -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Capacity</label>
+            <input type="number" id="classCapacityField" class="form-control" value="35" min="1" max="60">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal="classFormModal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Class</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- View Enrolled Students in Class Modal -->
+  <div class="modal-overlay" id="classStudentsModal">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title" id="classStudentsTitle">Enrolled Students</h3>
+        <button class="modal-close-btn" data-close-modal="classStudentsModal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Student Phone</th>
+              <th>Parent Name & Contact</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="classStudentsTableBody"></tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" data-close-modal="classStudentsModal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script>
+    Auth.requireRole(['admin']);
+
+    let classesData = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadClasses();
+    });
+
+    function loadClasses() {
+      classesData = Storage.getClasses();
+      const students = Storage.getStudents();
+      const container = document.getElementById('classesGrid');
+
+      // Update student counts dynamically
+      classesData.forEach(c => {
+        c.studentCount = students.filter(s => s.class === c.name && s.section === c.section).length;
+      });
+
+      container.innerHTML = classesData.map(c => `
+        <div class="card card-hover" style="display:flex; flex-direction:column; justify-content:space-between;">
+          <div class="card-header" style="background:#f8fafc;">
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <div class="stat-icon primary" style="width:36px; height:36px;"><i data-lucide="school"></i></div>
+              <div>
+                <strong style="font-size:1.05rem; color:var(--slate-900); display:block;">${c.name} - Section ${c.section}</strong>
+                <span class="text-xs text-muted">${c.room || 'Room 101'}</span>
+              </div>
+            </div>
+            <span class="badge badge-present">${c.studentCount} Students</span>
+          </div>
+          <div class="card-body">
+            <div style="display:flex; flex-direction:column; gap:0.5rem; font-size:0.85rem;">
+              <div style="display:flex; justify-content:space-between;">
+                <span class="text-muted">Class Teacher:</span>
+                <span class="font-bold text-slate-800">${c.classTeacher}</span>
+              </div>
+              <div style="display:flex; justify-content:space-between;">
+                <span class="text-muted">Max Capacity:</span>
+                <span class="font-semibold text-slate-700">${c.capacity || 35}</span>
+              </div>
+              <div style="display:flex; justify-content:space-between;">
+                <span class="text-muted">Enrollment Fill:</span>
+                <span class="font-semibold text-slate-700">${Math.round((c.studentCount / (c.capacity || 35)) * 100)}%</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer" style="gap:0.5rem;">
+            <button class="btn btn-outline btn-sm" onclick="viewClassStudents('${c.name}', '${c.section}')" style="flex:1;">
+              <i data-lucide="users"></i> View Students
+            </button>
+            <button class="btn btn-outline btn-icon-sm" onclick="editClass('${c.id}')" title="Edit">
+              <i data-lucide="edit-3"></i>
+            </button>
+            <button class="btn btn-outline btn-icon-sm text-danger" onclick="deleteClass('${c.id}')" title="Delete">
+              <i data-lucide="trash-2"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      App.initIcons();
+    }
+
+    function openClassModal(cls = null) {
+      const teachers = Storage.getTeachers();
+      const teacherSelect = document.getElementById('classTeacherSelect');
+      teacherSelect.innerHTML = teachers.map(t => `<option value="${t.name}">${t.name} (${t.subject})</option>`).join('');
+
+      document.getElementById('classForm').reset();
+      const title = document.getElementById('classModalTitle');
+
+      if (cls) {
+        title.textContent = 'Edit Class / Section';
+        document.getElementById('classIdField').value = cls.id;
+        document.getElementById('classNameField').value = cls.name;
+        document.getElementById('classSectionField').value = cls.section;
+        document.getElementById('classRoomField').value = cls.room || '';
+        document.getElementById('classTeacherSelect').value = cls.classTeacher;
+        document.getElementById('classCapacityField').value = cls.capacity || 35;
+      } else {
+        title.textContent = 'Add Class / Section';
+        document.getElementById('classIdField').value = '';
+      }
+
+      App.openModal('classFormModal');
+    }
+
+    function handleClassSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('classIdField').value;
+      const name = document.getElementById('classNameField').value.trim();
+      const section = document.getElementById('classSectionField').value.trim().toUpperCase();
+      const room = document.getElementById('classRoomField').value.trim();
+      const classTeacher = document.getElementById('classTeacherSelect').value;
+      const capacity = parseInt(document.getElementById('classCapacityField').value, 10) || 35;
+
+      const clsData = {
+        id: id || `CLS-${name.replace(/\s+/g, '')}-${section}`,
+        name,
+        section,
+        room,
+        classTeacher,
+        capacity
+      };
+
+      Storage.saveClass(clsData);
+      App.closeModal('classFormModal');
+      loadClasses();
+      App.showToast('Success', `Class ${name}-${section} saved successfully.`, 'success');
+    }
+
+    function editClass(id) {
+      const cls = classesData.find(c => c.id === id);
+      if (cls) openClassModal(cls);
+    }
+
+    function deleteClass(id) {
+      const cls = classesData.find(c => c.id === id);
+      if (!cls) return;
+
+      App.showConfirmModal({
+        title: 'Delete Class',
+        message: `Are you sure you want to remove <strong>${cls.name} - ${cls.section}</strong>?`,
+        confirmText: 'Delete Class',
+        confirmVariant: 'danger',
+        onConfirm: () => {
+          Storage.deleteClass(id);
+          loadClasses();
+          App.showToast('Deleted', `Class removed.`, 'info');
+        }
+      });
+    }
+
+    function viewClassStudents(className, section) {
+      const allStudents = Storage.getStudents();
+      const filtered = allStudents.filter(s => s.class === className && s.section === section);
+      
+      document.getElementById('classStudentsTitle').textContent = `Students in ${className} - Section ${section} (${filtered.length})`;
+      const tbody = document.getElementById('classStudentsTableBody');
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-muted">No students enrolled in this section.</td></tr>`;
+      } else {
+        tbody.innerHTML = filtered.map(s => `
+          <tr>
+            <td><span class="font-mono text-xs font-bold text-slate-500">${s.id}</span></td>
+            <td><strong>${s.name}</strong></td>
+            <td>${s.phone || '-'}</td>
+            <td>${s.parentName} (${s.parentPhone})</td>
+            <td><span class="badge badge-present">Enrolled</span></td>
+          </tr>
+        `).join('');
+      }
+
+      App.openModal('classStudentsModal');
+    }
+  </script>
+</body>
+</html>

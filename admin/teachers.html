@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Management - EduTrack</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="app-layout">
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="app-sidebar" id="appSidebar">
+    <div class="sidebar-header">
+      <a href="dashboard.html" class="brand-logo">
+        <div class="brand-icon-box"><i data-lucide="graduation-cap"></i></div>
+        <span class="brand-name">Edu<span>Track</span></span>
+      </a>
+    </div>
+
+    <div class="sidebar-content">
+      <div class="nav-section">
+        <span class="nav-section-title">Main Portal</span>
+        <a href="dashboard.html" class="nav-link">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="attendance.html" class="nav-link">
+          <i data-lucide="calendar-check-2"></i>
+          <span>Take Attendance</span>
+        </a>
+        <a href="reports.html" class="nav-link">
+          <i data-lucide="bar-chart-3"></i>
+          <span>Attendance Reports</span>
+        </a>
+        <a href="notifications.html" class="nav-link">
+          <i data-lucide="bell"></i>
+          <span>Notifications</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <span class="nav-section-title">Institution Management</span>
+        <a href="students.html" class="nav-link">
+          <i data-lucide="users"></i>
+          <span>Students</span>
+        </a>
+        <a href="teachers.html" class="nav-link active">
+          <i data-lucide="briefcase"></i>
+          <span>Faculty & Teachers</span>
+        </a>
+        <a href="classes.html" class="nav-link">
+          <i data-lucide="school"></i>
+          <span>Classes & Sections</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <span class="nav-section-title">System</span>
+        <a href="settings.html" class="nav-link">
+          <i data-lucide="settings"></i>
+          <span>Settings & Gateways</span>
+        </a>
+        <a href="../login.html" class="nav-link text-danger" onclick="Auth.logout()">
+          <i data-lucide="log-out"></i>
+          <span>Sign Out</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-snippet">
+        <img class="user-snippet-avatar js-user-avatar" src="" alt="Admin">
+        <div class="user-snippet-info">
+          <div class="user-snippet-name js-user-name">Loading...</div>
+          <div class="user-snippet-role js-user-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Container -->
+  <div class="app-main">
+    <!-- Topbar -->
+    <header class="app-header">
+      <div class="header-left">
+        <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle Navigation">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="header-title-wrapper">
+          <h1 class="header-page-title">Faculty & Teachers</h1>
+          <span class="header-breadcrumbs">Admin / Management / Faculty</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="dropdown-wrapper">
+          <button class="header-action-btn" id="notifMenuBtn">
+            <i data-lucide="bell"></i>
+            <span class="badge-unread-dot" id="headerNotifBadge"></span>
+          </button>
+          <div class="dropdown-menu notif-dropdown" id="notifDropdown">
+            <div class="dropdown-header" style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="font-bold text-sm">Simulated Alerts</span>
+              <a href="notifications.html" class="text-xs text-primary font-semibold">View All</a>
+            </div>
+            <div class="notif-list" id="headerNotifList"></div>
+          </div>
+        </div>
+
+        <div class="dropdown-wrapper">
+          <button class="user-profile-btn" id="userMenuBtn">
+            <img class="user-profile-avatar js-user-avatar" src="" alt="Profile">
+            <div class="user-profile-meta">
+              <span class="user-meta-name js-user-name">Admin</span>
+              <span class="user-meta-role">Administrator</span>
+            </div>
+            <i data-lucide="chevron-down" style="width:16px;height:16px;color:var(--slate-400);"></i>
+          </button>
+          <div class="dropdown-menu" id="userDropdown">
+            <a href="settings.html" class="dropdown-item"><i data-lucide="settings"></i> System Settings</a>
+            <button class="dropdown-item text-danger" onclick="Auth.logout()"><i data-lucide="log-out"></i> Logout</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="page-header-row">
+        <div>
+          <h2 class="page-title">Faculty Management</h2>
+          <p class="page-subtitle" id="teacherCountDisplay">Loading faculty records...</p>
+        </div>
+        <button class="btn btn-primary" id="addTeacherBtn">
+          <i data-lucide="user-plus"></i> Add Faculty Member
+        </button>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="card" style="padding: 1.1rem 1.4rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+          <div class="search-wrapper" style="max-width: 420px;">
+            <i data-lucide="search"></i>
+            <input type="text" id="teacherSearchInput" class="form-control" placeholder="Search by name, subject, ID or email...">
+          </div>
+          <div>
+            <select id="teacherSubjectFilter" class="form-control" style="width: 180px;">
+              <option value="all">All Subjects</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Teachers Table Card -->
+      <div class="card">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Faculty ID</th>
+                  <th>Faculty Profile</th>
+                  <th>Department / Subject</th>
+                  <th>Contact Info</th>
+                  <th>Assigned Classes</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="teachersTableBody">
+                <!-- Rendered by js/teachers.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add / Edit Teacher Modal -->
+  <div class="modal-overlay" id="teacherFormModal">
+    <div class="modal-card modal-md">
+      <div class="modal-header">
+        <h3 class="modal-title" id="teacherModalTitle">Add Faculty Member</h3>
+        <button class="modal-close-btn" data-close-modal="teacherFormModal"><i data-lucide="x"></i></button>
+      </div>
+      <form id="teacherForm">
+        <div class="modal-body">
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Teacher ID <span class="required">*</span></label>
+              <input type="text" id="teacherIdField" class="form-control" readonly required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Full Name <span class="required">*</span></label>
+              <input type="text" id="teacherFullName" class="form-control" placeholder="e.g. Sarah Jenkins" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address <span class="required">*</span></label>
+              <input type="email" id="teacherEmail" class="form-control" placeholder="sarah.jenkins@edutrack.edu" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number <span class="required">*</span></label>
+              <input type="tel" id="teacherPhone" class="form-control" placeholder="+1 (555) 000-0000" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subject / Discipline <span class="required">*</span></label>
+              <input type="text" id="teacherSubject" class="form-control" placeholder="e.g. Mathematics" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Qualification</label>
+              <input type="text" id="teacherQualification" class="form-control" placeholder="e.g. M.Sc. Applied Mathematics">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Assigned Classes (Comma separated)</label>
+            <input type="text" id="teacherClasses" class="form-control" placeholder="Grade 10-A, Grade 9-B">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal="teacherFormModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveTeacherBtn">Save Faculty Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/teachers.js"></script>
+  <script>
+    Auth.requireRole(['admin']);
+  </script>
+</body>
+</html>

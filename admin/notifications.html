@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notification Management & History - EduTrack</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/attendance.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="app-layout">
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="app-sidebar" id="appSidebar">
+    <div class="sidebar-header">
+      <a href="dashboard.html" class="brand-logo">
+        <div class="brand-icon-box"><i data-lucide="graduation-cap"></i></div>
+        <span class="brand-name">Edu<span>Track</span></span>
+      </a>
+    </div>
+
+    <div class="sidebar-content">
+      <div class="nav-section">
+        <span class="nav-section-title">Main Portal</span>
+        <a href="dashboard.html" class="nav-link">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="attendance.html" class="nav-link">
+          <i data-lucide="calendar-check-2"></i>
+          <span>Take Attendance</span>
+        </a>
+        <a href="reports.html" class="nav-link">
+          <i data-lucide="bar-chart-3"></i>
+          <span>Attendance Reports</span>
+        </a>
+        <a href="notifications.html" class="nav-link active">
+          <i data-lucide="bell"></i>
+          <span>Notifications</span>
+          <span class="badge-count" id="sidebarNotifBadge">4</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <span class="nav-section-title">Institution Management</span>
+        <a href="students.html" class="nav-link">
+          <i data-lucide="users"></i>
+          <span>Students</span>
+        </a>
+        <a href="teachers.html" class="nav-link">
+          <i data-lucide="briefcase"></i>
+          <span>Faculty & Teachers</span>
+        </a>
+        <a href="classes.html" class="nav-link">
+          <i data-lucide="school"></i>
+          <span>Classes & Sections</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <span class="nav-section-title">System</span>
+        <a href="settings.html" class="nav-link">
+          <i data-lucide="settings"></i>
+          <span>Settings & Gateways</span>
+        </a>
+        <a href="../login.html" class="nav-link text-danger" onclick="Auth.logout()">
+          <i data-lucide="log-out"></i>
+          <span>Sign Out</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-snippet">
+        <img class="user-snippet-avatar js-user-avatar" src="" alt="Admin">
+        <div class="user-snippet-info">
+          <div class="user-snippet-name js-user-name">Loading...</div>
+          <div class="user-snippet-role js-user-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Container -->
+  <div class="app-main">
+    <header class="app-header">
+      <div class="header-left">
+        <button class="sidebar-toggle-btn" id="sidebarToggleBtn"><i data-lucide="menu"></i></button>
+        <div class="header-title-wrapper">
+          <h1 class="header-page-title">Notification Gateway Simulation</h1>
+          <span class="header-breadcrumbs">Admin / Communications / Notifications</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="dropdown-wrapper">
+          <button class="header-action-btn" id="notifMenuBtn">
+            <i data-lucide="bell"></i>
+            <span class="badge-unread-dot" id="headerNotifBadge"></span>
+          </button>
+          <div class="dropdown-menu notif-dropdown" id="notifDropdown">
+            <div class="dropdown-header" style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="font-bold text-sm">Simulated Alerts</span>
+              <a href="notifications.html" class="text-xs text-primary font-semibold">View All</a>
+            </div>
+            <div class="notif-list" id="headerNotifList"></div>
+          </div>
+        </div>
+
+        <div class="dropdown-wrapper">
+          <button class="user-profile-btn" id="userMenuBtn">
+            <img class="user-profile-avatar js-user-avatar" src="" alt="Profile">
+            <div class="user-profile-meta">
+              <span class="user-meta-name js-user-name">Admin</span>
+              <span class="user-meta-role">Administrator</span>
+            </div>
+            <i data-lucide="chevron-down" style="width:16px;height:16px;color:var(--slate-400);"></i>
+          </button>
+          <div class="dropdown-menu" id="userDropdown">
+            <a href="settings.html" class="dropdown-item"><i data-lucide="settings"></i> System Settings</a>
+            <button class="dropdown-item text-danger" onclick="Auth.logout()"><i data-lucide="log-out"></i> Logout</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="page-header-row">
+        <div>
+          <h2 class="page-title">Automatic Notification Management & Logs</h2>
+          <p class="page-subtitle">Inspect automated SMS & WhatsApp absent notifications, verify delivery statuses, and test simulations.</p>
+        </div>
+        <div style="display:flex; gap:0.75rem;">
+          <button class="btn btn-outline" id="triggerTestAlertBtn">
+            <i data-lucide="send"></i> Test Custom Alert
+          </button>
+          <button class="btn btn-primary" id="notifExportCSVBtn">
+            <i data-lucide="download"></i> Export Logs CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- Critical DEMO Simulation Notice Banner -->
+      <div class="demo-banner">
+        <i data-lucide="shield-alert" class="demo-banner-icon" style="width:24px;height:24px;"></i>
+        <div class="demo-banner-text">
+          <strong>DEMO NOTICE:</strong> All notifications shown below are local simulations. No external SMS or WhatsApp APIs are invoked, and no actual telecommunication charges or deliveries occur. This interface validates institutional communication logic, consent filtering, and message layout.
+        </div>
+      </div>
+
+      <!-- Live Simulation Metrics -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Total Simulated Alerts</span>
+            <div class="stat-icon primary"><i data-lucide="send"></i></div>
+          </div>
+          <div class="stat-value text-slate-900" id="statNotifTotal">0</div>
+          <div class="stat-footer"><span class="stat-caption">Recorded across all channels</span></div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Delivery Success Rate</span>
+            <div class="stat-icon success"><i data-lucide="check-check"></i></div>
+          </div>
+          <div class="stat-value text-success" id="statNotifRate">0%</div>
+          <div class="stat-footer"><span class="stat-trend up"><i data-lucide="arrow-up"></i> High reliability</span></div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Pending / In-Transit</span>
+            <div class="stat-icon info"><i data-lucide="clock"></i></div>
+          </div>
+          <div class="stat-value text-info" id="statNotifPending">0</div>
+          <div class="stat-footer"><span class="stat-caption">Simulated queue</span></div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Simulated Failures</span>
+            <div class="stat-icon danger"><i data-lucide="alert-circle"></i></div>
+          </div>
+          <div class="stat-value text-danger" id="statNotifFailed">0</div>
+          <div class="stat-footer"><span class="stat-caption">Eligible for retry simulation</span></div>
+        </div>
+      </div>
+
+      <!-- Filters & Channel Tabs Toolbar -->
+      <div class="card" style="padding:1.25rem; margin-bottom:1.5rem;">
+        <!-- Top Channel Tabs -->
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--slate-100); padding-bottom:1rem; margin-bottom:1rem; flex-wrap:wrap; gap:1rem;">
+          <div style="display:flex; gap:0.5rem;">
+            <button type="button" class="btn btn-sm btn-outline js-channel-filter active" data-channel="all">
+              All Channels
+            </button>
+            <button type="button" class="btn btn-sm btn-outline js-channel-filter" data-channel="WhatsApp">
+              <i data-lucide="message-circle" style="color:var(--whatsapp-dark);"></i> WhatsApp Alerts
+            </button>
+            <button type="button" class="btn btn-sm btn-outline js-channel-filter" data-channel="SMS">
+              <i data-lucide="smartphone" style="color:#0369a1;"></i> SMS Alerts
+            </button>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <button type="button" class="btn btn-sm btn-outline" id="notifResetFilterBtn">
+              <i data-lucide="rotate-ccw"></i> Reset Filters
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Inputs Row -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:1rem;">
+          <div class="search-wrapper" style="grid-column: span 1;">
+            <i data-lucide="search"></i>
+            <input type="text" id="notifSearchInput" class="form-control" placeholder="Search student, parent, phone...">
+          </div>
+          <div>
+            <select id="notifStatusFilter" class="form-control">
+              <option value="all">All Delivery Statuses</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Sent">Sent</option>
+              <option value="Sending">Sending</option>
+              <option value="Pending">Pending</option>
+              <option value="Failed">Failed</option>
+            </select>
+          </div>
+          <div>
+            <select id="notifClassFilter" class="form-control">
+              <option value="all">All Classes</option>
+            </select>
+          </div>
+          <div>
+            <input type="date" id="notifDateFilter" class="form-control">
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications History Table Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i data-lucide="list"></i>
+            <span>Simulated Notification Log Entries</span>
+          </div>
+          <span class="text-xs text-muted" id="notifCountDisplay">Showing notifications</span>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Student Name</th>
+                  <th>Recipient Info</th>
+                  <th>Destination Phone</th>
+                  <th>Channel</th>
+                  <th>Status</th>
+                  <th>Timestamp</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="notificationsTableBody">
+                <!-- Rendered by js/notifications.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Notification Message Detail & Preview Modal -->
+  <div class="modal-overlay" id="notifDetailModal">
+    <div class="modal-card modal-md">
+      <div class="modal-header">
+        <h3 class="modal-title" id="notifDetailModalTitle">Notification Detail & Preview</h3>
+        <button class="modal-close-btn" data-close-modal="notifDetailModal"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="preview-tabs">
+          <button type="button" class="preview-tab-btn active" id="detailTabSMS" onclick="NotificationsController.switchDetailTab('sms')">
+            <i data-lucide="smartphone"></i> SMS Preview
+          </button>
+          <button type="button" class="preview-tab-btn" id="detailTabWA" onclick="NotificationsController.switchDetailTab('whatsapp')">
+            <i data-lucide="message-circle"></i> WhatsApp Preview
+          </button>
+        </div>
+
+        <!-- SMS Container -->
+        <div class="preview-tab-content active" id="detailContentSMS">
+          <div class="sms-phone-box">
+            <div class="sms-header">
+              <div class="sms-sender-name">EduTrack Institution Gateway</div>
+              <div class="sms-sender-sub">Recipient: <span id="modalSmsRecipient">Parent</span></div>
+            </div>
+            <div class="sms-body">
+              <div class="sms-time" id="modalSmsDate">Today</div>
+              <div class="sms-bubble" id="modalSmsContent">
+                Dear Parent, Your child has been marked ABSENT today.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WhatsApp Container -->
+        <div class="preview-tab-content" id="detailContentWA">
+          <div class="whatsapp-chat-box">
+            <div class="whatsapp-chat-header">
+              <div class="whatsapp-header-user">
+                <div class="whatsapp-avatar"><i data-lucide="graduation-cap"></i></div>
+                <div>
+                  <div class="whatsapp-title">EduTrack Attendance Bot 🏫</div>
+                  <div class="whatsapp-status">To: <span id="modalWaRecipient">Parent</span></div>
+                </div>
+              </div>
+              <span id="modalWaStatusBadge" class="badge badge-delivered">Delivered</span>
+            </div>
+            <div class="whatsapp-chat-body">
+              <div class="whatsapp-bubble">
+                <div class="whatsapp-bubble-header">
+                  <i data-lucide="bell" style="width:16px;height:16px;"></i>
+                  <span>EduTrack Attendance Alert</span>
+                </div>
+                <div>
+                  <p>Dear Parent,</p>
+                  <p style="margin:4px 0;">Your ward has been recorded as:</p>
+                  <ul style="margin:6px 0 6px 1.25rem; font-size:0.85rem;">
+                    <li>Student: <strong><span id="modalWaStudentName">Alex Morgan</span></strong></li>
+                    <li>Student ID: <strong><span id="modalWaStudentId">STU-1001</span></strong></li>
+                    <li>Class: <strong><span id="modalWaClass">Grade 10</span></strong></li>
+                    <li>Section: <strong><span id="modalWaSection">A</span></strong></li>
+                    <li>Date: <strong><span id="modalWaDate">Today</span></strong></li>
+                    <li>Status: <span style="color:#dc2626; font-weight:800;">🔴 ABSENT</span></li>
+                  </ul>
+                  <p style="font-size:0.8rem; color:#475569;">Please contact the institution for further inquiries.</p>
+                </div>
+                <div class="whatsapp-meta">
+                  <span>Simulated Delivery</span>
+                  <span class="whatsapp-ticks"><i data-lucide="check-check" style="width:14px;height:14px;"></i></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" data-close-modal="notifDetailModal">Close Preview</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Test Custom Alert Modal -->
+  <div class="modal-overlay" id="testAlertModal">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title">Trigger Simulated Alert</h3>
+        <button class="modal-close-btn" data-close-modal="testAlertModal"><i data-lucide="x"></i></button>
+      </div>
+      <form id="testAlertForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Student Name <span class="required">*</span></label>
+            <input type="text" id="testAlertStudentName" class="form-control" placeholder="e.g. Alex Morgan" required value="Alex Morgan">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Destination Phone <span class="required">*</span></label>
+            <input type="tel" id="testAlertPhone" class="form-control" placeholder="+1 (555) 000-0000" required value="+1 (555) 891-2345">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Recipient Category</label>
+            <select id="testAlertRecipient" class="form-control">
+              <option value="Parent">Parent / Guardian</option>
+              <option value="Student">Student Directly</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Communication Channel</label>
+            <select id="testAlertChannel" class="form-control">
+              <option value="WhatsApp">WhatsApp</option>
+              <option value="SMS">SMS Gateway</option>
+            </select>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Class</label>
+              <input type="text" id="testAlertClass" class="form-control" value="Grade 10">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Section</label>
+              <input type="text" id="testAlertSection" class="form-control" value="A">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal="testAlertModal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Simulate Dispatch</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script>
+    Auth.requireRole(['admin']);
+  </script>
+</body>
+</html>

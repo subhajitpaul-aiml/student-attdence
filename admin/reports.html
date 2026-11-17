@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Reports & Analytics - EduTrack</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="app-layout">
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Sidebar -->
+  <aside class="app-sidebar" id="appSidebar">
+    <div class="sidebar-header">
+      <a href="dashboard.html" class="brand-logo">
+        <div class="brand-icon-box"><i data-lucide="graduation-cap"></i></div>
+        <span class="brand-name">Edu<span>Track</span></span>
+      </a>
+    </div>
+
+    <div class="sidebar-content">
+      <div class="nav-section">
+        <span class="nav-section-title">Main Portal</span>
+        <a href="dashboard.html" class="nav-link">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="attendance.html" class="nav-link">
+          <i data-lucide="calendar-check-2"></i>
+          <span>Take Attendance</span>
+        </a>
+        <a href="reports.html" class="nav-link active">
+          <i data-lucide="bar-chart-3"></i>
+          <span>Attendance Reports</span>
+        </a>
+        <a href="notifications.html" class="nav-link">
+          <i data-lucide="bell"></i>
+          <span>Notifications</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <span class="nav-section-title">Institution Management</span>
+        <a href="students.html" class="nav-link">
+          <i data-lucide="users"></i>
+          <span>Students</span>
+        </a>
+        <a href="teachers.html" class="nav-link">
+          <i data-lucide="briefcase"></i>
+          <span>Faculty & Teachers</span>
+        </a>
+        <a href="classes.html" class="nav-link">
+          <i data-lucide="school"></i>
+          <span>Classes & Sections</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <span class="nav-section-title">System</span>
+        <a href="settings.html" class="nav-link">
+          <i data-lucide="settings"></i>
+          <span>Settings & Gateways</span>
+        </a>
+        <a href="../login.html" class="nav-link text-danger" onclick="Auth.logout()">
+          <i data-lucide="log-out"></i>
+          <span>Sign Out</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-snippet">
+        <img class="user-snippet-avatar js-user-avatar" src="" alt="Admin">
+        <div class="user-snippet-info">
+          <div class="user-snippet-name js-user-name">Loading...</div>
+          <div class="user-snippet-role js-user-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Container -->
+  <div class="app-main">
+    <header class="app-header">
+      <div class="header-left">
+        <button class="sidebar-toggle-btn" id="sidebarToggleBtn"><i data-lucide="menu"></i></button>
+        <div class="header-title-wrapper">
+          <h1 class="header-page-title">Attendance Reports & Analytics</h1>
+          <span class="header-breadcrumbs">Admin / Analytics / Reports</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="dropdown-wrapper">
+          <button class="header-action-btn" id="notifMenuBtn">
+            <i data-lucide="bell"></i>
+            <span class="badge-unread-dot" id="headerNotifBadge"></span>
+          </button>
+          <div class="dropdown-menu notif-dropdown" id="notifDropdown">
+            <div class="dropdown-header" style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="font-bold text-sm">Simulated Alerts</span>
+              <a href="notifications.html" class="text-xs text-primary font-semibold">View All</a>
+            </div>
+            <div class="notif-list" id="headerNotifList"></div>
+          </div>
+        </div>
+
+        <div class="dropdown-wrapper">
+          <button class="user-profile-btn" id="userMenuBtn">
+            <img class="user-profile-avatar js-user-avatar" src="" alt="Profile">
+            <div class="user-profile-meta">
+              <span class="user-meta-name js-user-name">Admin</span>
+              <span class="user-meta-role">Administrator</span>
+            </div>
+            <i data-lucide="chevron-down" style="width:16px;height:16px;color:var(--slate-400);"></i>
+          </button>
+          <div class="dropdown-menu" id="userDropdown">
+            <a href="settings.html" class="dropdown-item"><i data-lucide="settings"></i> System Settings</a>
+            <button class="dropdown-item text-danger" onclick="Auth.logout()"><i data-lucide="log-out"></i> Logout</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-content">
+      <div class="page-header-row">
+        <div>
+          <h2 class="page-title">Institutional Analytics & Audit</h2>
+          <p class="page-subtitle">Track trends, calculate percentage formulas, and export institutional compliance sheets.</p>
+        </div>
+        <div style="display:flex; gap:0.75rem;">
+          <button class="btn btn-outline" id="printReportBtn">
+            <i data-lucide="printer"></i> Print Summary
+          </button>
+          <button class="btn btn-primary" id="exportReportCSVBtn">
+            <i data-lucide="download"></i> Export Roster CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- Formula Information Callout -->
+      <div class="card" style="background:#eff6ff; border-color:#bfdbfe; padding:0.9rem 1.25rem; margin-bottom:1.5rem;">
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div class="stat-icon primary" style="width:34px; height:34px;"><i data-lucide="calculator"></i></div>
+          <div style="font-size:0.85rem; color:#1e3a8a;">
+            <strong>Institutional Attendance Formula:</strong>
+            <code>Attendance Percentage = (Total Present Days / Total Working Days) × 100</code>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Controls Toolbar -->
+      <div class="card" style="padding:1.1rem 1.4rem; margin-bottom:1.5rem;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+            <div class="filter-item">
+              <label class="form-label">Report Period</label>
+              <select id="reportPeriodSelect" class="form-control" style="width: 170px;">
+                <option value="month" selected>Past 30 Days</option>
+                <option value="week">Past 7 Days</option>
+                <option value="today">Today's Audit</option>
+                <option value="all">Full Academic Year</option>
+              </select>
+            </div>
+            <div class="filter-item">
+              <label class="form-label">Class Filter</label>
+              <select id="reportClassFilter" class="form-control" style="width: 170px;">
+                <option value="all">All Classes</option>
+              </select>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-xs text-muted font-semibold uppercase d-block">Audit Base</span>
+            <span class="font-bold text-slate-800" id="reportWorkingDays">14 Days</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance KPI Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Overall Attendance Rate</span>
+            <div class="stat-icon primary"><i data-lucide="percent"></i></div>
+          </div>
+          <div class="stat-value text-primary" id="reportOverallPct">0.0%</div>
+          <div class="stat-footer">
+            <span class="stat-trend up"><i data-lucide="check"></i> Formula compliant</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Present Ratio</span>
+            <div class="stat-icon success"><i data-lucide="user-check"></i></div>
+          </div>
+          <div class="stat-value text-success" id="reportPresentPct">0.0%</div>
+          <div class="stat-footer"><span class="stat-caption">Present entries recorded</span></div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Absent Ratio</span>
+            <div class="stat-icon danger"><i data-lucide="user-x"></i></div>
+          </div>
+          <div class="stat-value text-danger" id="reportAbsentPct">0.0%</div>
+          <div class="stat-footer"><span class="stat-caption">Unexcused / excused</span></div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <span class="stat-label">Late Arrival Ratio</span>
+            <div class="stat-icon warning"><i data-lucide="clock"></i></div>
+          </div>
+          <div class="stat-value text-warning" id="reportLatePct">0.0%</div>
+          <div class="stat-footer"><span class="stat-caption">Tardy &gt; 10 mins</span></div>
+        </div>
+      </div>
+
+      <!-- Interactive Charts -->
+      <div class="charts-grid">
+        <div class="card chart-card">
+          <div class="card-header">
+            <div class="card-title">
+              <i data-lucide="trending-up"></i>
+              <span>Period Attendance Progression</span>
+            </div>
+            <span class="text-xs text-muted">Daily Timeline</span>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="attendanceTrendChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="card chart-card">
+          <div class="card-header">
+            <div class="card-title">
+              <i data-lucide="pie-chart"></i>
+              <span>Status Breakdown</span>
+            </div>
+            <span class="text-xs text-muted">Present vs Absent vs Late</span>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="attendanceDistributionChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Class-Wise Performance Summary -->
+      <div class="card" style="margin-bottom: 1.75rem;">
+        <div class="card-header">
+          <div class="card-title">
+            <i data-lucide="school"></i>
+            <span>Class-Wise Breakdown</span>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Class & Section</th>
+                  <th>Faculty In-Charge</th>
+                  <th>Total Enrolled</th>
+                  <th>Present %</th>
+                  <th>Absent %</th>
+                  <th>Late %</th>
+                  <th style="min-width: 140px;">Completion Bar</th>
+                </tr>
+              </thead>
+              <tbody id="reportClassTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comprehensive Student-Wise Attendance Table -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <i data-lucide="users"></i>
+            <span>Student-Wise Attendance Roster</span>
+          </div>
+          <span class="text-xs text-muted">Calculated per formula</span>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Student ID</th>
+                  <th>Student Name</th>
+                  <th>Class</th>
+                  <th>Working Days</th>
+                  <th>Present</th>
+                  <th>Absent</th>
+                  <th>Late</th>
+                  <th>Attendance % & Status</th>
+                </tr>
+              </thead>
+              <tbody id="reportStudentTableBody">
+                <!-- Injected via ReportsController in js/reports.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/reports.js"></script>
+  <script>
+    Auth.requireRole(['admin']);
+  </script>
+</body>
+</html>
